@@ -1,0 +1,103 @@
+.login-form__content {
+    margin: 0 auto;
+    padding: 30px 15px;
+    max-width: 1230px;
+}
+
+.login-form__heading {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form {
+    margin: 0 auto;
+    width: 25%;
+    text-align: center;
+}
+
+.form__group {
+    margin-bottom: 5px;
+}
+
+.form__group-title {
+    text-align: left;
+}
+
+.form__error {
+    height: 20px;
+    color: #ff0000;
+    text-align: left;
+}
+
+.form__input--text input {
+    padding: 10px;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    appearance: none;
+}
+
+.form__button {
+    margin-top: 20px;
+}
+
+.form__button-submit {
+    padding: 10px;
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 3px;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+.register__link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.register__button-submit {
+    color: #00bcd4;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .form {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .form__input--text input {
+        height: 45px;
+    }
+
+    .form__button-submit {
+        height: 45px;
+        font-size: 16px;
+    }
+
+    .register__link {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form {
+        width: 90%;
+    }
+
+    .form__input--text input {
+        height: 50px;
+    }
+
+    .form__button-submit {
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .register__link {
+        font-size: 16px;
+    }
+}
