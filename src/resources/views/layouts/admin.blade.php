@@ -23,16 +23,12 @@
         use Illuminate\Support\Facades\Auth;
 
         $routeName = Route::currentRouteName();
-
-        $admin = Auth::guard('admin')->user();
-        $user = Auth::guard()->user();
-
-        $justClockedOut = session()->get('just_clocked_out');
         @endphp
 
         @if (!in_array($routeName, ['login', 'register', 'verification.notice']))
         <nav class="header-nav">
-            @if($admin && !$user)
+            @if (Auth::guard('admin')->check())
+
             <a href="{{ url('/admin/attendance/list') }}">勤怠一覧</a>
             <a href="{{ url('/admin/staff/list') }}">スタッフ一覧</a>
             <a href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
@@ -40,33 +36,11 @@
                 @csrf
                 <button type="submit">ログアウト</button>
             </form>
-            @elseif ($user)
-            @if ($justClockedOut)
-            <a href="{{ url('/attendance/list') }}">今月の出勤一覧</a>
-            <a href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
-            <form action="/logout" method="post" style="display:inline;">
-                @csrf
-                <button type="submit">ログアウト</button>
-            </form>
-            @else
-            <a href="{{ url('/attendance') }}">勤怠</a>
-            <a href="{{ url('/attendance/list') }}">勤怠一覧</a>
-            <a href="{{ url('/stamp_correction_request/list') }}">申請</a>
-            <form action="/logout" method="post" style="display:inline;">
-                @csrf
-                <button type="submit">ログアウト</button>
-            </form>
-            @endif
+
             @endif
         </nav>
         @endif
     </header>
-
-    @if ($justClockedOut)
-    <div class="flash-message">
-        お疲れ様でした！
-    </div>
-    @endif
 
     <main>
         @yield('content')

@@ -2,27 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Admin extends Model
+class Admin extends Authenticatable
 {
-    use HasFactory;
+    protected $guard = 'admin';
 
-    protected $fillable = [
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name', 'email', 'password'];
 
-    protected $hidden = [
-        'password',
-    ];
-
-    public function setPasswordAttribute($value)
-    {
-        if (!empty($value)) {
-            $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
-        }
-    }
+    protected $hidden = ['password', 'remember_token'];
 }

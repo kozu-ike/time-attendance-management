@@ -1,19 +1,20 @@
 @extends('layouts.app')
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/attendance_index.css') }}">
+@endsection
+
 @section('content')
-<h1>勤怠登録</h1>
-
-<p>{{ now()->format('Y年m月d日（D）') }}</p>
-<p>{{ now()->format('H:i') }}</p>
-
 {{-- ステータス表示 --}}
-<p>現在のステータス: <strong>{{ $status }}</strong></p>
+<p class="status"><strong>{{ $status }}</strong></p>
+<p class="date">{{ now()->format('Y年m月d日（D）') }}</p>
+<p class="time">{{ now()->format('H:i') }}</p>
 
 @if(session('message'))
 <p style="color: green;">{{ session('message') }}</p>
 @endif
 
-<form action="{{ route('attendance.stamp') }}" method="POST">
+<form action="{{ route('user.attendance.stamp') }}" method="POST">
     @csrf
 
     @if ($status === '勤務外')

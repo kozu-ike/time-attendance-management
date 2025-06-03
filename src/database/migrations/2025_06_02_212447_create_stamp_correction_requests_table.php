@@ -24,11 +24,11 @@ return new class extends Migration
             $table->json('requested_breaks_json')->nullable();
             $table->text('note')->nullable();
             $table->string('status')->default('pending');
-            $table->unsignedBigInteger('admins_id')->nullable();
+            $table->unsignedBigInteger('admin_id')->nullable();
             $table->dateTime('reviewed_at')->nullable();
             $table->timestamps();
             $table->foreign('attendance_id')->references('id')->on('attendances')->onDelete('cascade');
-            $table->foreign('admins_id')->references('id')->on('admins')->onDelete('set null');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('set null');
         });
     }
 

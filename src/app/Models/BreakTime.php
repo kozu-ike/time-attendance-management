@@ -2,23 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BreakTime extends Model
 {
-    use HasFactory;
+    protected $fillable = ['attendance_id', 'break_in', 'break_out'];
 
-    protected $fillable = [
-        'work_date',
-        'clock_in',
-        'clock_out',
-        'status',
-        'attendances_id',
-
-    ];
-
-    public function attendances()
+    public function attendance()
     {
         return $this->belongsTo(Attendance::class);
     }

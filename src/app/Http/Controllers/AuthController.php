@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -22,9 +23,6 @@ class AuthController extends Controller
 
     public function showRegistrationForm()
     {
-        if (Auth::check()) {
-            return redirect()->route('profile.setup');
-        }
         return view('auth.register');
     }
 
@@ -42,12 +40,12 @@ class AuthController extends Controller
 
         try {
             $this->sendVerificationEmail($user);
-            return redirect()->route('profile.setup');
+            return redirect()->route('auth.register');
         } catch (\Exception $e) {
             Log::error("メール送信に失敗しました: " . $e->getMessage());
         }
 
-        return redirect('/attendance');
+        return redirect()->route('verification.notice');
     }
 
     public function login(LoginRequest $request)
@@ -61,10 +59,12 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'ログイン情報が登録されていません。']);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect('/')->with('success', 'ログアウトしました');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
     }
 
     public function sendVerificationEmail(User $user)
@@ -111,6 +111,6 @@ class AuthController extends Controller
             return back()->with('resent', true);
         }
 
-        return redirect('/mypage')->with('message', 'すでにメールが認証されています');
+        return redirect('/attendance')->with('message', 'すでにメールが認証されています');
     }
 }
