@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<h1>勤怠詳細</h1>
+<h1><span class="bar">｜</span>勤怠詳細</h1>
 
 @if ($errors->any())
 <div class="error-messages">
@@ -17,27 +17,30 @@
 </div>
 @endif
 
+@php
+$breaks = $attendance->breaks ?? collect();
+@endphp
+
 <table>
-    <thead>
-        <tr>
-            <th>名前</th>
-            <th>日付</th>
-            <th>出勤</th>
-            <th>退勤</th>
-            <th>休憩</th>
-            <th>休憩２</th>
-            <th>備考</th>
-        </tr>
-    </thead>
     <tbody>
         <tr>
+            <th>名前</th>
             <td>{{ $attendance->user->name }}</td>
-            <td>{{ $attendance->work_date }}</td>
+        </tr>
+        <tr>
+            <th>日付</th>
+            <td>{{ \Carbon\Carbon::parse($attendance->work_date)->format('Y年n月j日') }}</td>
+        </tr>
+        <tr>
+            <th>出勤</th>
             <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '-' }}</td>
+        </tr>
+        <tr>
+            <th>退勤</th>
             <td>{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '-' }}</td>
-            @php
-            $breaks = $attendance->breaks ?? collect();
-            @endphp
+        </tr>
+        <tr>
+            <th>休憩</th>
             <td>
                 @if ($breaks->get(0))
                 {{ \Carbon\Carbon::parse($breaks[0]->break_in)->format('H:i') }} 〜 {{ \Carbon\Carbon::parse($breaks[0]->break_out)->format('H:i') }}
@@ -45,6 +48,9 @@
                 -
                 @endif
             </td>
+        </tr>
+        <tr>
+            <th>休憩２</th>
             <td>
                 @if ($breaks->get(1))
                 {{ \Carbon\Carbon::parse($breaks[1]->break_in)->format('H:i') }} 〜 {{ \Carbon\Carbon::parse($breaks[1]->break_out)->format('H:i') }}
@@ -52,13 +58,16 @@
                 -
                 @endif
             </td>
+        </tr>
+        <tr>
+            <th>備考</th>
             <td>{{ $attendance->remarks ?? '（記載なし）' }}</td>
         </tr>
     </tbody>
 </table>
 
 @php
-$isAdmin = Auth::check() && Auth::user()->is_admin;
+$isAdmin = Auth::guard('admin')->check();
 @endphp
 
 <div style="margin-top: 20px;">
@@ -66,7 +75,7 @@ $isAdmin = Auth::check() && Auth::user()->is_admin;
     @if ($correction->status === 'approved')
     <button type="button" disabled style="background-color: gray; color: white;">承認済</button>
     @elseif ($correction->status === 'pending')
-    <form method="POST" action="{{ route('stamp_correction_request.approve', $correction->id) }}">
+    <form method="POST" action="{{ route('stamp_correction_request.approve.store', $correction->id) }}">
         @csrf
         <button type="submit" style="background-color: green; color: white;">承認</button>
     </form>

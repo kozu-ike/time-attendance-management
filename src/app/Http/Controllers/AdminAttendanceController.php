@@ -46,5 +46,15 @@ class AdminAttendanceController extends Controller
 
         return view('admin.attendance.staff', compact('attendances', 'user', 'month'));
     }
+
+    public function detail($attendance_id)
+    {
+        
+        $attendance = Attendance::with(['breaks', 'user'])->findOrFail($attendance_id);
+
+        return view('attendance.detail', ['attendances' => [$attendance]]);
+    }
+
+    
 }
 

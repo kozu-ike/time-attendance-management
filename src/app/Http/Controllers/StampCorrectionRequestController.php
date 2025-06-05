@@ -11,48 +11,41 @@ use Illuminate\Support\Facades\Auth;
 class StampCorrectionRequestController extends Controller
 {
     /**
-     * 申請一覧（管理者は全件、ユーザーは自分の申請のみ）
-     */
-    public function index()
-    {
-        $user = Auth::user();
-        $isAdmin = Auth::guard('admin')->check();
-
-        $corrections = StampCorrectionRequest::with(['attendance.user'])
-            ->when(!$isAdmin, function ($query) use ($user) {
-                $query->whereHas('attendance', function ($subQuery) use ($user) {
-                    $subQuery->where('user_id', $user->id);
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('shared.stamp_correction_request_list', compact('corrections', 'isAdmin'));
-    }
-
-    /**
      * 修正申請の承認画面表示
-     * ルートでeditApproveという名前なのでここで定義
+     * ルートモデルバインディングで受け取る
      */
     public function editApprove($id)
     {
-        $correction = StampCorrectionRequest::with(['attendance.user'])->findOrFail($id);
+        $user = Auth::user();
+        $admin = Auth::guard('admin')->user();
 
-        return view('admin.stamp_correction_request.approve', compact('correction'));
+        if (!$user && !$admin) {
+            abort(403, 'ログインしていません');
+        }
+
+        $correction = StampCorrectionRequest::with(['attendance.user'])->findOrFail($id);
+        $attendance = $correction->attendance;
+
+        return view('stamp_correction_request.approve', [
+            'correction' => $correction,
+            'attendance' => $attendance,
+
+            'isAdmin' => $admin !== null,
+        ]);
     }
 
     /**
      * 修正申請を承認し、勤務時間と休憩時間を更新する
      */
-    public function approve(Request $request, $id)
+    public function approve(Request $request, StampCorrectionRequest $correction)
     {
-        $correction = StampCorrectionRequest::findOrFail($id);
-
         $attendance = Attendance::findOrFail($correction->attendance_id);
+
         $attendance->clock_in = $correction->requested_clock_in;
         $attendance->clock_out = $correction->requested_clock_out;
         $attendance->save();
 
+        // 既存の休憩時間削除し、再登録
         BreakTime::where('attendance_id', $attendance->id)->delete();
 
         $breaks = json_decode($correction->requested_breaks_json, true);
@@ -64,13 +57,36 @@ class StampCorrectionRequestController extends Controller
             ]);
         }
 
+        // 修正申請のステータス更新
         $correction->status = 'approved';
         $correction->reviewed_at = now();
-        $correction->admins_id = Auth::id();  // 管理者IDとしてログインIDをセット
+        $correction->admin_id = Auth::guard('admin')->id();
         $correction->save();
 
-        return redirect()->route('admin.stamp_correction_request.list')->with('success', '修正申請を承認しました。');
+        return redirect()->route('stamp_correction_request.list')->with('success', '修正申請を承認しました。');
     }
 
-    
+    /**
+     * 申請一覧（管理者は全件、ユーザーは自分の申請のみ）
+     */
+    public function index()
+    {
+        if (!Auth::check() && !Auth::guard('admin')->check()) {
+            return redirect()->route('login');
+        }
+
+        $isAdmin = Auth::guard('admin')->check();
+        $user = $isAdmin ? Auth::guard('admin')->user() : Auth::user();
+
+        $corrections = \App\Models\StampCorrectionRequest::with(['attendance.user'])
+            ->when(!$isAdmin, function ($query) use ($user) {
+                $query->whereHas('attendance', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('stamp_correction_request.list', compact('corrections', 'isAdmin'));
+    }
 }

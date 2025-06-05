@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<h1><span class="bar">｜</span> {{ $attendance->user->name }}の勤怠</h1>
+<h1><span class="bar">｜</span> {{ $user->name }}の勤怠</h1>
 
 @php
 use Carbon\Carbon;
@@ -63,7 +63,7 @@ $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
             <td class="gray">{{ $clockOut ? $clockOut->format('H:i') : '-' }}</td>
             <td class="gray">{{ $breakHours }}:{{ $breakMinutes }}</td>
             <td class="gray">{{ $workHours }}:{{ $workRemainMinutes }}</td>
-            <td class="detail"><a href="{{ route('user.attendance.detail', $attendance->id) }}">詳細</a></td>
+            <td class="detail"><a href="{{ route('admin.attendance.detail', $attendance->id) }}">詳細</a></td>
         </tr>
         @endforeach
     </tbody>

@@ -41,7 +41,7 @@ $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
         <tr>
             <td class="gray">{{ $user->name }}</td>
             <td class="gray">{{ $user->email }}</td>
-            <td class="detail"><a href="{{ route('admin.attendance.staff', ['user' => $user->id, 'month' => $month ?? now()->format('Y-m')]) }}">詳細</a></td>
+            <td class="detail"><a href="{{ route('admin.attendance.staff', ['user_id' => $user->id, 'month' => $month ?? now()->format('Y-m')]) }}">詳細</a></td>
         </tr>
         @endforeach
     </tbody>

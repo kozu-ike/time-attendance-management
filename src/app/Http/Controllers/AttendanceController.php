@@ -135,32 +135,26 @@ class AttendanceController extends Controller
     public function update(AttendanceRequest $request)
     {
         $user = Auth::user();
-
         $attendancesInput = $request->input('attendances', []);
 
         foreach ($attendancesInput as $attendanceId => $data) {
-            // 勤怠レコード取得（本人の勤怠か必ずチェック）
             $attendance = Attendance::where('id', $attendanceId)
                 ->where('user_id', $user->id)
                 ->first();
 
             if (!$attendance) {
-                continue; // 無いか他人の勤怠はスキップ
+                continue;
             }
 
-            // 勤怠情報更新（画面で編集可能なもの）
             $attendance->work_date = $data['work_date'] ?? $attendance->work_date;
             $attendance->clock_in = $data['clock_in'] ?? null;
             $attendance->clock_out = $data['clock_out'] ?? null;
             $attendance->remarks = $data['remarks'] ?? '';
 
-            // 休憩情報更新
-            // 既存のbreaksは一旦削除してから新しく登録し直す例
             $attendance->breaks()->delete();
 
             if (isset($data['breaks']) && is_array($data['breaks'])) {
                 foreach ($data['breaks'] as $break) {
-                    // break_in と break_out 両方がある場合のみ登録
                     if (!empty($break['break_in']) && !empty($break['break_out'])) {
                         $attendance->breaks()->create([
                             'break_in' => $break['break_in'],
@@ -170,17 +164,21 @@ class AttendanceController extends Controller
                 }
             }
 
-            // ここで修正申請として新規レコードを作成する場合（例）
-            StampCorrectionRequest::create([
+            // 修正申請レコードを作成し、変数に代入
+            $correction = StampCorrectionRequest::create([
                 'attendance_id' => $attendance->id,
                 'user_id' => $user->id,
+                'request_date' => now()->toDateString(),
                 'status' => 'pending',
                 'note' => 'ユーザーによる修正申請',
-                // 必要に応じて他のフィールドも
             ]);
+
+            // 1件のみ申請してリダイレクトする想定ならここで return
+            return redirect()->route('stamp_correction_request.approve', $correction->id)
+                ->with('success', '修正申請を送信しました。');
         }
 
-        return redirect()->route('user.attendance.detail', array_key_first($attendancesInput))
-            ->with('success', '修正申請を送信しました。');
+        // すべての勤怠がスキップされた場合のフォールバック
+        return redirect()->back()->with('error', '修正できる勤怠データが見つかりませんでした。');
     }
 }

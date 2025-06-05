@@ -11,12 +11,12 @@ class AttendanceRequest extends FormRequest
     {
         return auth()->check();
     }
+    
 
     public function rules()
     {
         return [
             'attendances' => ['required', 'array'],
-            'attendances.*.work_date' => ['required', 'date'],
             'attendances.*.clock_in' => ['nullable', 'date_format:H:i'],
             'attendances.*.clock_out' => ['nullable', 'date_format:H:i'],
             'attendances.*.breaks' => ['nullable', 'array'],

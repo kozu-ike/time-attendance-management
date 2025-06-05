@@ -10,6 +10,7 @@ class StampCorrectionRequest extends Model
     use HasFactory;
 
     protected $fillable = [
+        'attendance_id',
         'request_date',
         'original_clock_in',
         'original_clock_out',
@@ -19,20 +20,18 @@ class StampCorrectionRequest extends Model
         'requested_breaks_json',
         'note',
         'status',
-        'admins_id',
+        'admin_id',
         'reviewed_at',
-        'attendances_id',
-        'admins_id'
     ];
 
 
-    public function attendances()
+    public function attendance()
     {
-        return $this->belongsTo(Attendance::class);
+        return $this->belongsTo(Attendance::class, 'attendance_id');
     }
 
-    public function admins()
+    public function admin()
     {
-        return $this->belongsTo(Admin::class);
+        return $this->belongsTo(Admin::class, 'admins_id');
     }
 }

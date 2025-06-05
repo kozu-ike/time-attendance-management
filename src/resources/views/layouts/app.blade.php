@@ -32,7 +32,7 @@
         <nav class="header-nav">
             @if(Auth::guard('admin')->check())
             <a href="{{ url('/admin/attendance/list') }}">勤怠一覧</a>
-            <a href="{{ url('/admin/staff/list') }}">スタッフ一覧</a>
+            <a href="{{ url('admin/attendance/staff_list') }}">スタッフ一覧</a>
             <a href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
             <form action="/logout" method="post" style="display:inline;">
                 @csrf

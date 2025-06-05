@@ -1,22 +1,30 @@
 body {
-    font-family: sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: #f0f0f0;
     margin: 0;
-    padding: 0;
-    text-align: center;
+    padding: 20px;
+    color: #333;
 }
 
 h1 {
     font-size: 24px;
-    margin-bottom: 20px;
     color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.bar {
+    color: #3498db;
+    margin-right: 10px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
 }
 
 thead {
@@ -27,7 +35,7 @@ thead {
 th,
 td {
     padding: 12px 15px;
-    text-align: center;
+    text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
@@ -37,40 +45,82 @@ tr:hover {
 
 input[type="time"],
 input[type="text"] {
-    padding: 6px 8px;
+    padding: 8px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
     box-sizing: border-box;
 }
 
+/* 出勤・退勤入力エリア */
+.time-inputs {
+    display: flex;
+    justify-content: flex-start;
+    gap: 16px;
+    margin-top: 5px;
+}
+
+.time-inputs > input[type="text"] {
+    width: 80px;
+}
+
+/* 休憩時間の入力エリア */
+.break-time {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
 /* 年と月日を分けて横並びにして少し間隔をあける */
 .date-year {
     margin-right: 8px;
     font-weight: bold;
+    color: #34495e;
 }
 
 .date-monthday {
     font-weight: normal;
+    color: #555;
 }
 
-/* 備考のテキスト入力の縦を大きく */
+/* 備考欄 */
 input[type="text"][name*="remarks"] {
-    height: 60px; /* 高さを60pxに拡大 */
-    padding: 8px;
+    height: 60px;
+    padding: 10px;
     font-size: 14px;
-    resize: vertical; /* ユーザーが縦にサイズ変更できるように */
+    resize: vertical;
     box-sizing: border-box;
     width: 50%;
+    margin-top: 5px;
 }
+
+/* エラーメッセージ */
+.error-messages ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.error-messages li {
+    color: red;
+    font-size: 14px;
+}
+
+/* 修正ボタン */
 .btn-attendance-submit {
-    background-color: black;
+    background-color: #3498db;
     border: none;
     color: white;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 16px;
-    padding: 10px 20px;
+    padding: 10px 30px;
     margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.btn-attendance-submit:hover {
+    background-color: #2980b9;
 }
