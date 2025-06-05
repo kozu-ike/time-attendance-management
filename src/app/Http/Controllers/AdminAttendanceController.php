@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AttendanceRequest;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use App\Models\User;
+
 use App\Models\StampCorrectionRequest;
 use Carbon\Carbon;
 
@@ -15,12 +17,10 @@ class AdminAttendanceController extends Controller
 {
     public function list(Request $request)
     {
-        // 日付の取得（指定がなければ今日）
         $date = $request->input('day', date('Y-m-d'));
         $parsedDate = Carbon::parse($date);
         $currentDay = $parsedDate->format('Y/m/d');
 
-        // 指定日の勤怠データ取得（ユーザー情報も含める）
         $attendances = Attendance::with(['breaks', 'user'])
             ->whereDate('work_date', $parsedDate)
             ->orderBy('user_id')
@@ -28,4 +28,23 @@ class AdminAttendanceController extends Controller
 
         return view('admin.attendance.list', compact('attendances', 'currentDay', 'date'));
     }
+
+
+    public function staffAttendance(Request $request, $user_id)
+    {
+        $month = $request->input('month', now()->format('Y-m'));
+        $startDate = Carbon::parse($month . '-01')->startOfMonth();
+        $endDate = $startDate->copy()->endOfMonth();
+
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user_id)
+            ->whereBetween('work_date', [$startDate, $endDate])
+            ->orderBy('work_date')
+            ->get();
+
+        $user = User::findOrFail($user_id);
+
+        return view('admin.attendance.staff', compact('attendances', 'user', 'month'));
+    }
 }
+

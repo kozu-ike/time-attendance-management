@@ -1,9 +1,9 @@
 body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #f9f9f9;
+    font-family: sans-serif;
+    background-color: #f0f0f0;
     margin: 0;
-    padding: 20px;
-    color: #333;
+    padding: 0;
+    text-align: center;
 }
 
 h1 {
@@ -37,7 +37,6 @@ tr:hover {
 
 input[type="time"],
 input[type="text"] {
-    width: 90%;
     padding: 6px 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -45,31 +44,33 @@ input[type="text"] {
     box-sizing: border-box;
 }
 
-button[type="submit"] {
-    background-color: #3498db;
+/* 年と月日を分けて横並びにして少し間隔をあける */
+.date-year {
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.date-monthday {
+    font-weight: normal;
+}
+
+/* 備考のテキスト入力の縦を大きく */
+input[type="text"][name*="remarks"] {
+    height: 60px; /* 高さを60pxに拡大 */
+    padding: 8px;
+    font-size: 14px;
+    resize: vertical; /* ユーザーが縦にサイズ変更できるように */
+    box-sizing: border-box;
+    width: 50%;
+}
+.btn-attendance-submit {
+    background-color: black;
     border: none;
     color: white;
     font-weight: bold;
     cursor: pointer;
     border-radius: 4px;
     font-size: 16px;
-}
-
-button[type="submit"]:hover {
-    background-color: #2980b9;
-}
-.btn-submit {
-    margin-top: 20px;
     padding: 10px 20px;
-    background-color: #3498db;
-    border: none;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.btn-submit:hover {
-    background-color: #2980b9;
+    margin-top: 20px;
 }

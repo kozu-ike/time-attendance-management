@@ -118,6 +118,20 @@ class AttendanceController extends Controller
 
         return view('attendance.list', compact('attendances', 'month', 'currentMonth'));
     }
+
+    public function detail($attendance_id)
+    {
+        $user = Auth::user();
+
+        $attendance = Attendance::with('breaks')
+            ->where('id', $attendance_id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+        $attendances = collect([$attendance]);
+        return view('attendance.detail', compact('attendances'));
+    }
+
+
     public function update(AttendanceRequest $request)
     {
         $user = Auth::user();

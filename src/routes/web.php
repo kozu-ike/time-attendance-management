@@ -46,6 +46,9 @@ Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
     //勤怠詳細画面（一般ユーザー）
     Route::get('/attendance/{attendance_id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+
+    Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
+
     //申請一覧画面（一般ユーザー）
     Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('store');
 });
