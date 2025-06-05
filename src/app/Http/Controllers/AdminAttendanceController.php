@@ -3,38 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\AttendanceRequest;
 use App\Models\Attendance;
-use App\Models\BreakTime;
 use App\Models\User;
-
-use App\Models\StampCorrectionRequest;
 use Carbon\Carbon;
 
 
 class AdminAttendanceController extends Controller
 {
-    public function list(Request $request)
-    {
-        $date = $request->input('day', date('Y-m-d'));
-        $parsedDate = Carbon::parse($date);
-        $currentDay = $parsedDate->format('Y/m/d');
-
-        $attendances = Attendance::with(['breaks', 'user'])
-            ->whereDate('work_date', $parsedDate)
-            ->orderBy('user_id')
-            ->get();
-
-        return view('admin.attendance.list', compact('attendances', 'currentDay', 'date'));
-    }
+    
 
 
     public function staffAttendance(Request $request, $user_id)
     {
         $month = $request->input('month', now()->format('Y-m'));
-        $startDate = Carbon::parse($month . '-01')->startOfMonth();
-        $endDate = $startDate->copy()->endOfMonth();
+        $currentMonth = \Carbon\Carbon::parse($month);
+        $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
+
+        $startDate = $currentMonth->copy()->startOfMonth();
+        $endDate = $currentMonth->copy()->endOfMonth();
 
         $attendances = Attendance::with('breaks')
             ->where('user_id', $user_id)
@@ -44,17 +31,36 @@ class AdminAttendanceController extends Controller
 
         $user = User::findOrFail($user_id);
 
-        return view('admin.attendance.staff', compact('attendances', 'user', 'month'));
+        return view('admin.attendance.staff_attendance', compact(
+            'attendances',
+            'user',
+            'month',
+            'currentMonth',
+            'prevMonth',
+            'nextMonth'
+        ));
+    }
+    public function list(Request $request,)
+    {
+        $date = $request->input('day', date('Y-m-d'));
+        $parsedDate = Carbon::parse($date);
+        $currentDay = $parsedDate->format('Y/m/d');
+
+        $attendances = Attendance::with(['breaks', 'user'])
+            ->whereDate('work_date', $parsedDate)
+            ->orderBy('user_id')
+            ->get();
+        $users = $attendances->pluck('user', 'user_id');
+        return view('admin.attendance.list', compact('attendances', 'currentDay', 'date'));
     }
 
     public function detail($attendance_id)
     {
-        
+
         $attendance = Attendance::with(['breaks', 'user'])->findOrFail($attendance_id);
 
         return view('attendance.detail', ['attendances' => [$attendance]]);
     }
 
-    
 }
 

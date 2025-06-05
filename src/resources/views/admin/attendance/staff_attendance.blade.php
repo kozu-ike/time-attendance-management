@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<h1><span class="bar">｜</span> {{ $user->name }}の勤怠</h1>
+<h1><span class="bar">｜</span> {{ $user->name }}さんの勤怠</h1>
 
 @php
 use Carbon\Carbon;
@@ -17,14 +17,15 @@ $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
 
 
 <div class="month-navigation">
-    <a href="{{ route('user.attendance.list', ['month' => $prevMonth]) }}" class="nav-link">← 前月</a>
-    <form method="GET" action="{{ route('user.attendance.list') }}" class="month-form">
+    <a href="{{ route('admin.attendance.staff', ['user_id' => $user->id, 'month' => $prevMonth]) }}" class="nav-link">← 前月</a>
+
+    <form method="GET" action="{{ route('admin.attendance.staff', ['user_id' => $user->id]) }}" class="month-form">
         <label for="month-picker" class="calendar-icon" title="月を選択">📅</label>
         <input type="month" id="month-picker" name="month" value="{{ $month ?? now()->format('Y-m') }}" style="display:none;" onchange="this.form.submit()">
         <span class="current-month">{{ $currentMonth->format('Y/m') }}</span>
     </form>
 
-    <a href="{{ route('user.attendance.list', ['month' => $nextMonth]) }}" class="nav-link">翌月 →</a>
+    <a href="{{ route('admin.attendance.staff', ['user_id' => $user->id,'month' => $nextMonth]) }}" class="nav-link">翌月 →</a>
 </div>
 
 <table class="attendance-table">

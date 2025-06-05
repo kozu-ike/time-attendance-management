@@ -11,7 +11,6 @@ class UserController extends Controller
     public function staffList(Request $request)
     {
 
-        \Log::info('staffList accessed');
 
         $users = User::orderBy('name')->get();
         $month = $request->input('month', now()->format('Y-m'));

@@ -35,8 +35,6 @@ Route::get('/stamp_correction_request/approve/{correction}', [StampCorrectionReq
     ->name('stamp_correction_request.approve')
     ->middleware(['web']); // 最低限のミドルウェア（必要に応じてauthなど調整）
 
-
-
 Route::get('email/verify', [AuthController::class, 'verify'])->name('verification.notice');
 Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
 Route::post('email/resend', [AuthController::class, 'resendVerification'])->name('verification.resend');
@@ -44,14 +42,11 @@ Route::post('email/resend', [AuthController::class, 'resendVerification'])->name
 //申請一覧画面
 
 Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('store');
-
-
 Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
     //出勤登録画面（一般ユーザー）
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
 
     Route::post('/attendance/stamp', [AttendanceController::class, 'stamp'])->name('attendance.stamp');
-
 
     //勤怠一覧画面（一般ユーザー）
     Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
@@ -59,36 +54,27 @@ Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/{attendance_id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
 
     Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
-
-    
 });
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AdminAuthController::class, 'login'])->name('login.post');
-    Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
+    Route::post('admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
     Route::middleware('auth:admin')->group(function () {
         //勤怠一覧画面（管理者）
         Route::get('/attendance/list', [AdminAttendanceController::class, 'list'])->name('attendance.list');
-        // パスは admin/attendance/list となるので prefixのadminと連結される
+
+        //スタッフ一覧画面（管理者）
+        Route::get('/attendance/staff_list', [UserController::class, 'staffList'])->name('attendance.staff_list');
+
+        //スタッフ別勤怠一覧画面（管理者）
+        Route::get('/attendance/staff/{user_id}', [AdminAttendanceController::class, 'staffAttendance'])->name('attendance.staff');
 
         //勤怠詳細画面（管理者）
         Route::get('/attendance/{attendance_id}', [AdminAttendanceController::class,  'detail'])->name('attendance.detail');
-
-        //スタッフ一覧画面（管理者）
-        Route::get('/attendance/staff_list', [UserController::class, 'staffList'])->name('admin.attendance.staff_list');
-
-        //スタッフ別勤怠一覧画面（管理者）
-        Route::get('/attendance/staff/{user_id}', [AdminAttendanceController::class, 'staffAttendance'])->name('admin.attendance.staff');
-
-
-
-        
         //修正申請承認画面（管理者）
-
-
         Route::post('/stamp_correction_request/approve/{correction}', [StampCorrectionRequestController::class, 'approve'])
             ->name('stamp_correction_request.approve.store');
     });
