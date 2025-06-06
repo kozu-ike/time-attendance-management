@@ -41,29 +41,12 @@ $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
     </thead>
     <tbody>
         @foreach($attendances as $attendance)
-        @php
-        $clockIn = $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in) : null;
-        $clockOut = $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out) : null;
-        $totalBreakMinutes = $attendance->breaks->reduce(function($carry, $break) {
-        if ($break->break_in && $break->break_out) {
-        $in = \Carbon\Carbon::parse($break->break_in);
-        $out = \Carbon\Carbon::parse($break->break_out);
-        return $carry + $out->diffInMinutes($in);
-        }
-        return $carry;
-        }, 0);
-        $workMinutes = $clockIn && $clockOut ? $clockOut->diffInMinutes($clockIn) - $totalBreakMinutes : 0;
-        $workHours = floor($workMinutes / 60);
-        $workRemainMinutes = str_pad($workMinutes % 60, 2, '0', STR_PAD_LEFT);
-        $breakHours = floor($totalBreakMinutes / 60);
-        $breakMinutes = str_pad($totalBreakMinutes % 60, 2, '0', STR_PAD_LEFT);
-        @endphp
         <tr>
-            <td class="gray">{{ $attendance->work_date }}</td>
-            <td class="gray">{{ $clockIn ? $clockIn->format('H:i') : '-' }}</td>
-            <td class="gray">{{ $clockOut ? $clockOut->format('H:i') : '-' }}</td>
-            <td class="gray">{{ $breakHours }}:{{ $breakMinutes }}</td>
-            <td class="gray">{{ $workHours }}:{{ $workRemainMinutes }}</td>
+            <td class="gray">{{ $attendance->formatted_date }}</td>
+            <td class="gray">{{ $attendance->formatted_clock_in }}</td>
+            <td class="gray">{{ $attendance->formatted_clock_out }}</td>
+            <td class="gray">{{ $attendance->formatted_break }}</td>
+            <td class="gray">{{ $attendance->formatted_work }}</td>
             <td class="detail"><a href="{{ route('admin.attendance.detail', $attendance->id) }}">詳細</a></td>
         </tr>
         @endforeach

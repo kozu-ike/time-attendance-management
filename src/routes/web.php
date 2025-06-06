@@ -60,7 +60,7 @@ Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AdminAuthController::class, 'login'])->name('login.post');
-    Route::post('admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    Route::post('admin/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
     Route::middleware('auth:admin')->group(function () {
         //勤怠一覧画面（管理者）
