@@ -11,6 +11,7 @@ class BreakSeeder extends Seeder
 {
     public function run(): void
     {
+        BreakTime::truncate();
         $attendances = Attendance::all();
 
         foreach ($attendances as $attendance) {

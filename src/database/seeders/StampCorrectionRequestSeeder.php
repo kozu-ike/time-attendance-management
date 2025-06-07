@@ -7,7 +7,7 @@ use App\Models\Attendance;
 use App\Models\StampCorrectionRequest;
 use App\Models\Admin;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class StampCorrectionRequestSeeder extends Seeder
 {
@@ -24,7 +24,7 @@ class StampCorrectionRequestSeeder extends Seeder
 
             $requestedClockIn = (clone $originalClockIn)->subMinutes(rand(5, 20));
             $requestedClockOut = (clone $originalClockOut)->addMinutes(rand(5, 20));
-
+            $notes = ['遅延', '業務延長'];
             StampCorrectionRequest::create([
                 'attendance_id' => $attendance->id,
                 'user_id' => $attendance->user_id,
@@ -45,7 +45,9 @@ class StampCorrectionRequestSeeder extends Seeder
                         'break_out' => $requestedClockIn->copy()->addHours(3)->addMinutes(30)->format('Y-m-d H:i:s'),
                     ],
                 ]),
-                'note' => Str::random(10),
+
+
+                'note' => Arr::random($notes),
                 'status' => ['pending', 'approved'][rand(0, 1)],
                 'admin_id' => $adminId,
                 'reviewed_at' => now(),

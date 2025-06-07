@@ -17,8 +17,6 @@ return new class extends Migration
             $table->date('work_date');
             $table->dateTime('clock_in')->nullable();
             $table->dateTime('clock_out')->nullable();
-            $table->integer('total_break_minutes')->nullable();
-            $table->integer('total_work_minutes')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

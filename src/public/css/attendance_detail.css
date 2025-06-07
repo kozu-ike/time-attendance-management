@@ -18,12 +18,24 @@ h1 {
     color: #3498db;
     margin-right: 10px;
 }
+.attendance-detail-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto 60px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 30px 40px;
+    font-weight: bold;
+    font-family: "Helvetica Neue", sans-serif;
+    color: #333;
+}
 
 table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-size: 15px;
     margin-bottom: 30px;
 }
 
@@ -32,7 +44,12 @@ thead {
     color: white;
 }
 
-th,
+th{
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: normal;
+    border-bottom: 1px solid #ddd;
+}
 td {
     padding: 12px 15px;
     text-align: left;
@@ -76,12 +93,13 @@ input[type="text"] {
 .date-year {
     margin-right: 8px;
     font-weight: bold;
-    color: #34495e;
+    color: black;
 }
 
 .date-monthday {
     font-weight: normal;
-    color: #555;
+    font-weight: bold;
+    color: black;
 }
 
 /* 備考欄 */
@@ -109,7 +127,7 @@ input[type="text"][name*="remarks"] {
 
 /* 修正ボタン */
 .btn-attendance-submit {
-    background-color: #3498db;
+    background-color: black;
     border: none;
     color: white;
     font-weight: bold;
@@ -122,5 +140,17 @@ input[type="text"][name*="remarks"] {
 }
 
 .btn-attendance-submit:hover {
-    background-color: #2980b9;
+    background-color: #333;
+}
+
+.btn-approved {
+    background-color: #555555; /* 濃いグレー */
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    font-size: 16px;
+    padding: 10px 30px;
+    margin-top: 20px;
+    cursor: not-allowed;
 }

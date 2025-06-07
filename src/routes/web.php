@@ -8,6 +8,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\StampCorrectionRequestController;
 use App\Http\Controllers\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,6 +19,7 @@ use App\Http\Controllers\UserController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 
 // 管理者ログイン
 Route::get('/admin/login', [AdminAuthController::class, 'login']);
@@ -32,7 +34,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 // 共通ルート：ユーザーでも管理者でも入れるようにする
 Route::get('/stamp_correction_request/approve/{correction}', [StampCorrectionRequestController::class, 'editApprove'])
-    ->name('stamp_correction_request.approve')
+    ->name('stamp_correction_request.edit_approve')
     ->middleware(['web']); // 最低限のミドルウェア（必要に応じてauthなど調整）
 
 Route::get('email/verify', [AuthController::class, 'verify'])->name('verification.notice');
@@ -41,7 +43,7 @@ Route::post('email/resend', [AuthController::class, 'resendVerification'])->name
 
 //申請一覧画面
 
-Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('store');
+Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('stamp_correction_request.list');
 Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
     //出勤登録画面（一般ユーザー）
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
@@ -54,6 +56,7 @@ Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/{attendance_id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
 
     Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
+    
 });
 
 
@@ -76,6 +79,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/attendance/{attendance_id}', [AdminAttendanceController::class,  'detail'])->name('attendance.detail');
         //修正申請承認画面（管理者）
         Route::post('/stamp_correction_request/approve/{correction}', [StampCorrectionRequestController::class, 'approve'])
-            ->name('stamp_correction_request.approve.store');
+            ->name('stamp_correction_request.approve');
     });
 });

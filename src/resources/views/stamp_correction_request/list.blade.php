@@ -7,9 +7,19 @@
 @section('content')
 <h1><span class="bar">｜</span> 申請一覧</h1>
 
+@php
+$currentStatus = $status ?? 'pending';
+@endphp
+
 <div class="month-navigation">
-    <span class="nav-link">承認待ち</span>
-    <span class="nav-link">承認済み</span>
+    <a href="{{ route('stamp_correction_request.list', ['status' => 'pending']) }}"
+        class="nav-link {{ $currentStatus === 'pending' ? 'active' : '' }}">
+        承認待ち
+    </a>
+    <a href="{{ route('stamp_correction_request.list', ['status' => 'approved']) }}"
+        class="nav-link {{ $currentStatus === 'approved' ? 'active' : '' }}">
+        承認済み
+    </a>
 </div>
 
 <table class="attendance-table">
@@ -53,9 +63,7 @@
             </td>
 
             <td class="detail">
-                <a href="{{ $isAdmin
-                    ? route('admin.attendance.detail', $correction->attendance->id)
-                    : route('user.attendance.detail', $correction->attendance->id) }}">
+                <a href="{{ route('stamp_correction_request.edit_approve', $correction->id) }}">
                     詳細
                 </a>
             </td>

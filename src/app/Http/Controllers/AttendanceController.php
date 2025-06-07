@@ -9,6 +9,10 @@ use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\StampCorrectionRequest;
 use Carbon\Carbon;
+use App\Services\AttendanceService;
+use Illuminate\Support\Facades\Log;
+
+
 
 
 class AttendanceController extends Controller
@@ -101,25 +105,34 @@ class AttendanceController extends Controller
         return redirect()->route('user.attendance.index')->with('message', $message);
     }
 
-    
+
 
     public function list(Request $request)
     {
+        $attendanceService = new AttendanceService();
+
         $month = $request->input('month', date('Y-m'));
         $userId = Auth::id();
 
-        $attendances = Attendance::with('breaks')
+        $attendances = \App\Models\Attendance::with('breaks')
             ->where('user_id', $userId)
             ->whereYear('work_date', '=', substr($month, 0, 4))
             ->whereMonth('work_date', '=', substr($month, 5, 2))
             ->orderBy('work_date', 'desc')
             ->get();
-        $monthFormatted = substr($month, 0, 7); // "2025-04"
 
-        $currentMonth = Carbon::parse($month)->format('Y年m月');  // そのままCarbonを使う
+        $dayOfWeekJP = ['日', '月', '火', '水', '木', '金', '土'];
+        
+
+        $attendances = $attendances->map(function ($attendance) use ($attendanceService, $dayOfWeekJP) {
+            return $attendanceService->formatAttendance($attendance, $dayOfWeekJP);
+        });
+
+        $currentMonth = Carbon::parse($month)->format('Y年m月');
 
         return view('attendance.list', compact('attendances', 'month', 'currentMonth'));
     }
+
 
     public function detail($attendance_id)
     {
@@ -132,7 +145,6 @@ class AttendanceController extends Controller
         $attendances = collect([$attendance]);
         return view('attendance.detail', compact('attendances'));
     }
-
 
     public function update(AttendanceRequest $request)
     {
@@ -149,38 +161,53 @@ class AttendanceController extends Controller
             }
 
             $attendance->work_date = $data['work_date'] ?? $attendance->work_date;
-            $attendance->clock_in = $data['clock_in'] ?? null;
-            $attendance->clock_out = $data['clock_out'] ?? null;
-            $attendance->remarks = $data['remarks'] ?? '';
+            $attendance->clock_in = !empty($data['clock_in'])
+                ? Carbon::parse($attendance->work_date . ' ' . $data['clock_in'])
+                : null;
+            $attendance->clock_out = !empty($data['clock_out'])
+                ? Carbon::parse($attendance->work_date . ' ' . $data['clock_out'])
+                : null;
+            $note = $data['remarks'] ?? '';
+            $attendance->save();
 
+            // 古い休憩データ削除
             $attendance->breaks()->delete();
 
+            // 休憩登録
             if (isset($data['breaks']) && is_array($data['breaks'])) {
                 foreach ($data['breaks'] as $break) {
                     if (!empty($break['break_in']) && !empty($break['break_out'])) {
+                        $workDate = $attendance->work_date;
+
+                        $breakIn = Carbon::parse($workDate . ' ' . $break['break_in']);
+                        $breakOut = Carbon::parse($workDate . ' ' . $break['break_out']);
+
+                        if ($breakOut->lt($breakIn)) {
+                            $breakOut->addDay(); // 翌日にまたぐ休憩対応
+                        }
+
                         $attendance->breaks()->create([
-                            'break_in' => $break['break_in'],
-                            'break_out' => $break['break_out'],
+                            'break_in' => $breakIn,
+                            'break_out' => $breakOut,
                         ]);
                     }
                 }
             }
 
-            // 修正申請レコードを作成し、変数に代入
+            // 修正申請レコードを作成
             $correction = StampCorrectionRequest::create([
                 'attendance_id' => $attendance->id,
                 'user_id' => $user->id,
                 'request_date' => now()->toDateString(),
                 'status' => 'pending',
-                'note' => 'ユーザーによる修正申請',
+                'note' => $note,
             ]);
 
-            // 1件のみ申請してリダイレクトする想定ならここで return
+            // 1件だけ処理してリダイレクト（ループ抜ける）
             return redirect()->route('stamp_correction_request.approve', $correction->id)
                 ->with('success', '修正申請を送信しました。');
         }
 
-        // すべての勤怠がスキップされた場合のフォールバック
         return redirect()->back()->with('error', '修正できる勤怠データが見つかりませんでした。');
     }
 }

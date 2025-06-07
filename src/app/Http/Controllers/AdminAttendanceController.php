@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\AttendanceService;
 
 
 
@@ -15,7 +16,8 @@ class AdminAttendanceController extends Controller
 {
     public function staffAttendance(Request $request, $user_id)
     {
-        // 月の指定 or 今月
+        $attendanceService = new AttendanceService();
+
         $month = $request->input('month', now()->format('Y-m'));
         $currentMonth = Carbon::parse($month);
         $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
@@ -26,34 +28,28 @@ class AdminAttendanceController extends Controller
 
         $dayOfWeekJP = ['日', '月', '火', '水', '木', '金', '土'];
 
-        // attendancesをそのまま取得（break_timesのJOINは不要）
-        $attendances = DB::table('attendances')
+        // attendancesをEloquentではなくDBクエリで取得（breaks含まない）
+        $attendances = Attendance::with('breaks')
             ->where('user_id', $user_id)
             ->whereBetween('work_date', [$startDate, $endDate])
             ->orderBy('work_date')
             ->get();
 
-        // フォーマット処理
-        $attendances->transform(function ($attendance) use ($dayOfWeekJP) {
-            $workDate = Carbon::parse($attendance->work_date);
-            $attendance->formatted_date = $workDate->format('m/d') . '（' . $dayOfWeekJP[$workDate->dayOfWeek] . '）';
+        // breaksをEloquentリレーションで取得するためUserモデルのattendancesに変更もあり
+        // ここは簡略化のためにDBから取得したattendancesにbreaksは含まれていない点に注意
 
-            $clockIn = $attendance->clock_in ? Carbon::parse($attendance->clock_in) : null;
-            $clockOut = $attendance->clock_out ? Carbon::parse($attendance->clock_out) : null;
+        // Eloquentに切り替え推奨
+        // ここではbreaksを取得できていないため休憩計算はできない
 
-            if ($clockIn && $clockOut && $clockOut->lt($clockIn)) {
-                $clockOut->addDay();
-            }
+        // ただし今回はサービスに渡せるように配列に変換し、breaksは空コレクションにセット
+        $attendances = $attendances->map(function ($item) {
+            $item->breaks = collect(); // 空コレクション
+            return $item;
+        });
 
-            $totalBreakMinutes = $attendance->total_break_minutes ?? 0;
-            $workMinutes = $attendance->total_work_minutes ?? 0;
-
-            $attendance->formatted_clock_in = $clockIn ? $clockIn->format('H:i') : '-';
-            $attendance->formatted_clock_out = $clockOut ? $clockOut->format('H:i') : '-';
-            $attendance->formatted_break = sprintf('%d:%02d', floor($totalBreakMinutes / 60), $totalBreakMinutes % 60);
-            $attendance->formatted_work = sprintf('%d:%02d', floor($workMinutes / 60), $workMinutes % 60);
-
-            return $attendance;
+        // フォーマット処理（breaksは空なので休憩は0分）
+        $attendances = $attendances->map(function ($attendance) use ($attendanceService, $dayOfWeekJP) {
+            return $attendanceService->formatAttendance($attendance, $dayOfWeekJP);
         });
 
         $user = User::findOrFail($user_id);
@@ -67,7 +63,6 @@ class AdminAttendanceController extends Controller
             'nextMonth'
         ));
     }
-
 
 
 

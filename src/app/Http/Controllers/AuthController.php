@@ -101,7 +101,7 @@ class AuthController extends Controller
             event(new Verified($user));
         }
 
-        return redirect('/attendance')->with('message', 'メール認証が完了しました');
+        return redirect('/attendance');
     }
 
     public function resendVerification()

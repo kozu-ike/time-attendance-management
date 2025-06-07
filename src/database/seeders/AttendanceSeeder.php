@@ -14,7 +14,7 @@ class AttendanceSeeder extends Seeder
         $users = User::all();
 
         foreach ($users as $user) {
-            for ($i = 0; $i < 90; $i++) {
+            for ($i = 1; $i < 90; $i++) {
                 $date = Carbon::today()->subDays($i);
 
                 $attendance = Attendance::create([
@@ -22,11 +22,6 @@ class AttendanceSeeder extends Seeder
                     'work_date' => $date->toDateString(),
                     'clock_in' => $date->copy()->setTime(9, 0)->format('Y-m-d H:i:s'),
                     'clock_out' => $date->copy()->setTime(18, 0)->format('Y-m-d H:i:s'),
-                ]);
-
-                $attendance->breaks()->create([
-                    'break_in' => $date->copy()->setTime(12, 0)->format('Y-m-d H:i:s'),
-                    'break_out' => $date->copy()->setTime(12, 30)->format('Y-m-d H:i:s'),
                 ]);
 
                 // breaksをロードし直して、保存して計算をトリガー
