@@ -6,11 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use App\Services\AttendanceService;
-
-
-
+use Illuminate\Support\Facades\Response;
 
 class AdminAttendanceController extends Controller
 {
@@ -28,26 +25,17 @@ class AdminAttendanceController extends Controller
 
         $dayOfWeekJP = ['日', '月', '火', '水', '木', '金', '土'];
 
-        // attendancesをEloquentではなくDBクエリで取得（breaks含まない）
         $attendances = Attendance::with('breaks')
             ->where('user_id', $user_id)
             ->whereBetween('work_date', [$startDate, $endDate])
             ->orderBy('work_date')
             ->get();
 
-        // breaksをEloquentリレーションで取得するためUserモデルのattendancesに変更もあり
-        // ここは簡略化のためにDBから取得したattendancesにbreaksは含まれていない点に注意
-
-        // Eloquentに切り替え推奨
-        // ここではbreaksを取得できていないため休憩計算はできない
-
-        // ただし今回はサービスに渡せるように配列に変換し、breaksは空コレクションにセット
         $attendances = $attendances->map(function ($item) {
-            $item->breaks = collect(); // 空コレクション
+            $item->breaks = collect();
             return $item;
         });
 
-        // フォーマット処理（breaksは空なので休憩は0分）
         $attendances = $attendances->map(function ($attendance) use ($attendanceService, $dayOfWeekJP) {
             return $attendanceService->formatAttendance($attendance, $dayOfWeekJP);
         });
@@ -64,10 +52,7 @@ class AdminAttendanceController extends Controller
         ));
     }
 
-
-
-
-    public function list(Request $request,)
+    public function list(Request $request)
     {
         $date = $request->input('day', date('Y-m-d'));
         $parsedDate = Carbon::parse($date);
@@ -77,7 +62,13 @@ class AdminAttendanceController extends Controller
             ->whereDate('work_date', $parsedDate)
             ->orderBy('user_id')
             ->get();
-        $users = $attendances->pluck('user', 'user_id');
+
+        $attendanceService = new AttendanceService();
+
+        $attendances = $attendances->map(function ($attendance) use ($attendanceService) {
+            return $attendanceService->formatAttendance($attendance);
+        });
+
         return view('admin.attendance.list', compact('attendances', 'currentDay', 'date'));
     }
 
@@ -89,5 +80,47 @@ class AdminAttendanceController extends Controller
         return view('attendance.detail', ['attendances' => [$attendance]]);
     }
 
-}
+    public function exportCsv(Request $request, $user_id)
+    {
+        $month = $request->query('month', now()->format('Y-m'));
+        $startDate = Carbon::parse($month . '-01')->startOfMonth();
+        $endDate = $startDate->copy()->endOfMonth();
+        $attendances = Attendance::where('user_id', $user_id)
+            ->whereBetween('work_date', [$startDate->toDateString(), $endDate->toDateString()])
+            ->get();
 
+        $service = new AttendanceService();
+
+        $attendances = $attendances->map(function ($attendance) use ($service) {
+            return $service->formatAttendance($attendance);
+        });
+
+        $columns = ['日付', '出勤', '退勤', '休憩時間', '勤務時間'];
+        $columns_sjis = array_map(fn($col) => mb_convert_encoding($col, 'SJIS-win', 'UTF-8'), $columns);
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=attendance_{$user_id}_{$month}.csv",
+        ];
+
+        $callback = function () use ($attendances, $columns_sjis) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns_sjis);
+
+            foreach ($attendances as $attendance) {
+                $row = [
+                    $attendance->work_date,
+                    $attendance->formatted_clock_in,
+                    $attendance->formatted_clock_out,
+                    $attendance->formatted_break,
+                    $attendance->formatted_work,
+                ];
+                $row_sjis = array_map(fn($field) => mb_convert_encoding($field, 'SJIS-win', 'UTF-8'), $row);
+                fputcsv($file, $row_sjis);
+            }
+            fclose($file);
+        };
+
+        return Response::stream($callback, 200, $headers);
+    }
+}

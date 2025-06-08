@@ -6,26 +6,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AttendanceRequest;
 use App\Models\Attendance;
-use App\Models\BreakTime;
 use App\Models\StampCorrectionRequest;
 use Carbon\Carbon;
 use App\Services\AttendanceService;
-use Illuminate\Support\Facades\Log;
-
-
-
 
 class AttendanceController extends Controller
 {
 
-    
     public function index()
     {
         $user = Auth::user();
-        $today = now()->toDateString();
+        $today = now();
 
         $attendance = Attendance::where('user_id', $user->id)
-            ->where('work_date', $today)
+            ->where('work_date', $today->toDateString())
             ->first();
 
         if (!$attendance) {
@@ -44,8 +38,14 @@ class AttendanceController extends Controller
             }
         }
 
-        return view('attendance.index', compact('status'));
+        $weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+        $weekday = $weekdays[$today->dayOfWeek];
+
+        $formattedDate = $today->format('Y年m月d日') . "（{$weekday}）";
+
+        return view('attendance.index', compact('status', 'formattedDate'));
     }
+
 
     public function stamp(Request $request)
     {
@@ -72,7 +72,6 @@ class AttendanceController extends Controller
                 if ($attendance->clock_in && !$attendance->clock_out) {
                     $lastBreak = $attendance->breaks()->latest('id')->first();
                     if ($lastBreak && !$lastBreak->break_out) {
-                        // 休憩終了していない場合は退勤不可
                         break;
                     }
                     $attendance->clock_out = now();
@@ -122,7 +121,7 @@ class AttendanceController extends Controller
             ->get();
 
         $dayOfWeekJP = ['日', '月', '火', '水', '木', '金', '土'];
-        
+
 
         $attendances = $attendances->map(function ($attendance) use ($attendanceService, $dayOfWeekJP) {
             return $attendanceService->formatAttendance($attendance, $dayOfWeekJP);
@@ -169,11 +168,8 @@ class AttendanceController extends Controller
                 : null;
             $note = $data['remarks'] ?? '';
             $attendance->save();
-
-            // 古い休憩データ削除
             $attendance->breaks()->delete();
 
-            // 休憩登録
             if (isset($data['breaks']) && is_array($data['breaks'])) {
                 foreach ($data['breaks'] as $break) {
                     if (!empty($break['break_in']) && !empty($break['break_out'])) {
@@ -183,7 +179,7 @@ class AttendanceController extends Controller
                         $breakOut = Carbon::parse($workDate . ' ' . $break['break_out']);
 
                         if ($breakOut->lt($breakIn)) {
-                            $breakOut->addDay(); // 翌日にまたぐ休憩対応
+                            $breakOut->addDay();
                         }
 
                         $attendance->breaks()->create([
@@ -194,7 +190,6 @@ class AttendanceController extends Controller
                 }
             }
 
-            // 修正申請レコードを作成
             $correction = StampCorrectionRequest::create([
                 'attendance_id' => $attendance->id,
                 'user_id' => $user->id,
@@ -203,7 +198,6 @@ class AttendanceController extends Controller
                 'note' => $note,
             ]);
 
-            // 1件だけ処理してリダイレクト（ループ抜ける）
             return redirect()->route('stamp_correction_request.approve', $correction->id)
                 ->with('success', '修正申請を送信しました。');
         }

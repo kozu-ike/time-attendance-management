@@ -7,7 +7,7 @@
 @section('content')
 {{-- ステータス表示 --}}
 <p class="status"><strong>{{ $status }}</strong></p>
-<p class="date">{{ now()->format('Y年m月d日（D）') }}</p>
+<p class="date">{{ $formattedDate }}</p>
 <p class="time">{{ now()->format('H:i') }}</p>
 
 @if(session('message'))

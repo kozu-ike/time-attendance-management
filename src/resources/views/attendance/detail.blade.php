@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="attendance-detail-container">
-    <h1><span class="bar">｜</span>勤怠詳細</h1>
+    <h1><span class="bar"></span>勤怠詳細</h1>
 
     @if ($errors->any())
     <div class="error-messages">
@@ -25,7 +25,7 @@
         $breaks = $attendance->breaks ?? collect();
         $totalBreakCount = $breaks->count() + 1;
         @endphp
-        <table>
+        <table class="attendance-table">
             <tbody>
                 <tr>
                     <th>名前</th>

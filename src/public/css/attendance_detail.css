@@ -1,4 +1,4 @@
-body {
+/* body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: #f0f0f0;
     margin: 0;
@@ -69,7 +69,6 @@ input[type="text"] {
     box-sizing: border-box;
 }
 
-/* 出勤・退勤入力エリア */
 .time-inputs {
     display: flex;
     justify-content: flex-start;
@@ -81,7 +80,6 @@ input[type="text"] {
     width: 80px;
 }
 
-/* 休憩時間の入力エリア */
 .break-time {
     display: flex;
     align-items: center;
@@ -89,7 +87,6 @@ input[type="text"] {
     margin-top: 5px;
 }
 
-/* 年と月日を分けて横並びにして少し間隔をあける */
 .date-year {
     margin-right: 8px;
     font-weight: bold;
@@ -102,7 +99,6 @@ input[type="text"] {
     color: black;
 }
 
-/* 備考欄 */
 input[type="text"][name*="remarks"] {
     height: 60px;
     padding: 10px;
@@ -113,7 +109,6 @@ input[type="text"][name*="remarks"] {
     margin-top: 5px;
 }
 
-/* エラーメッセージ */
 .error-messages ul {
     list-style: none;
     padding: 0;
@@ -125,7 +120,6 @@ input[type="text"][name*="remarks"] {
     font-size: 14px;
 }
 
-/* 修正ボタン */
 .btn-attendance-submit {
     background-color: black;
     border: none;
@@ -144,7 +138,7 @@ input[type="text"][name*="remarks"] {
 }
 
 .btn-approved {
-    background-color: #555555; /* 濃いグレー */
+    background-color: #555555;
     border: none;
     color: white;
     font-weight: bold;
@@ -153,4 +147,148 @@ input[type="text"][name*="remarks"] {
     padding: 10px 30px;
     margin-top: 20px;
     cursor: not-allowed;
+} */
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+h1 {
+    font-size: 20px;
+    color: #000;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.bar {
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background-color: black;
+    margin-right: 10px;
+}
+
+/* 勤怠詳細白ボックス化 */
+.attendance-detail-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: transparent; /* 親は透明 */
+    font-weight: bold;
+    font-family: "Helvetica Neue", sans-serif;
+    color: #333;
+    padding: 0 16px;
+}
+
+/* テーブル調整 */
+.attendance-table {
+    width: 90%;
+    max-width: 960px;
+    margin: 0 auto 50px;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 16px 10px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+tr:first-child th, tr:first-child td {
+    border-top: none;
+}
+
+th {
+    font-weight: normal;
+    width: 30%;
+    white-space: nowrap;
+}
+
+/* 出勤・退勤、休憩欄：横並び */
+.time-inputs, .break-time, .break-time-second {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 0;
+}
+
+/* 備考欄 */
+input[type="text"][name*="remarks"] {
+    height: 60px;
+    padding: 12px;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* 時刻入力欄統一 */
+input[type="time"], input[type="text"] {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    width: 80px;
+    text-align: center;
+}
+
+/* ボタン */
+.btn-attendance-submit {
+    background-color: black;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 12px 40px;
+    margin-left: auto;
+    margin-right: 40px;
+    display: block;
+}
+
+.btn-attendance-submit:hover {
+    background-color: black;
+}
+
+.btn-approved {
+    background-color: #555;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 12px 40px;
+    margin-top: 10px;
+    cursor: not-allowed;
+    margin-left: auto;
+    margin-right: 40px;
+    display: block;
+}
+
+/* エラー */
+.error-messages ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.error-messages li {
+    color: red;
+    font-size: 14px;
 }

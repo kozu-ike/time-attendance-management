@@ -96,7 +96,7 @@ h1 .bar {
 .attendance-table {
     width: 90%;
     max-width: 960px;
-    margin: 0 auto 50px;
+    margin: 0 auto 30px;
     border-collapse: collapse;
     background-color: #fff;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
@@ -128,4 +128,19 @@ h1 .bar {
 
 .attendance-table td.detail a:hover {
     text-decoration: underline;
+}
+
+.csv-button {
+    background-color: black;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 12px 40px;
+    margin-left: auto;
+    margin-right: 155px;
+    margin-bottom:50px;
+    display: block;
 }

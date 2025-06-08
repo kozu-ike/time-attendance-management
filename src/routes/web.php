@@ -56,7 +56,6 @@ Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/{attendance_id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
 
     Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
-    
 });
 
 
@@ -74,6 +73,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         //スタッフ別勤怠一覧画面（管理者）
         Route::get('/attendance/staff/{user_id}', [AdminAttendanceController::class, 'staffAttendance'])->name('attendance.staff');
+
+        //スタッフ別勤怠CSV出力（管理者）
+        Route::get('/attendance/staff/{user_id}/csv', [AdminAttendanceController::class, 'exportCsv'])->name('attendance.staff.csv');
+
 
         //勤怠詳細画面（管理者）
         Route::get('/attendance/{attendance_id}', [AdminAttendanceController::class,  'detail'])->name('attendance.detail');

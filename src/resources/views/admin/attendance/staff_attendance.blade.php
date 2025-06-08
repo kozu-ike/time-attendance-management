@@ -52,4 +52,9 @@ $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
         @endforeach
     </tbody>
 </table>
+
+<form method="GET" action="{{ route('admin.attendance.staff.csv', ['user_id' => $user->id]) }}">
+    <input type="hidden" name="month" value="{{ $month ?? now()->format('Y-m') }}">
+    <button type="submit" class="csv-button">CSV出力</button>
+</form>
 @endsection

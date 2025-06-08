@@ -10,7 +10,7 @@ body {
     width: 90%;
     max-width: 600px;
     margin: 50px auto;
-    padding: 2em;
+    padding: 32px; /* 2em ≒ 32px */
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 8px;
@@ -19,44 +19,44 @@ body {
 /* 日付・曜日 */
 p.date {
     font-weight: 700;
-    font-size: 1.5em;
+    font-size: 24px; /* 1.5em ≒ 24px */
     color: #000;
-    margin-bottom: 0.2em;
+    margin-bottom: 3px; /* 0.2em ≒ 3.2px */
 }
 
 /* 時間 */
 p.time {
     font-weight: 900;
-    font-size: 5.0em;
+    font-size: 80px; /* 5em ≒ 80px */
     color: #000;
     margin-top: 0;
-    margin-bottom: 1em;
+    margin-bottom: 16px; /* 1em ≒ 16px */
 }
 
 /* ステータス表示を丸みのある灰色ボタン風に */
 p.status {
     display: inline-block;
-    background-color: #d3d3d3; /* 薄いグレー */
-    color: #555555; /* 濃いグレー */
+    background-color: #d3d3d3;
+    color: #555555;
     border-radius: 20px;
-    padding: 0.5em 1.2em;
+    padding: 8px 19px; /* 0.5em ≒ 8px, 1.2em ≒ 19px */
     font-weight: 600;
-    font-size: 1em;
-    margin-bottom: 1em;
+    font-size: 16px; /* 1em ≒ 16px */
+    margin-bottom: 16px;
+    margin-top: 100px;
 }
 
 /* メッセージ */
 p[style*="color: green;"] {
     font-weight: bold;
-    margin-top: 1em;
+    margin-top: 16px;
 }
 
 /* ボタン共通 */
 button {
     border-radius: 6px;
-    padding: 10px 20px;
-    margin: 0.5em;
-    font-size: 1em;
+    padding: 12px 50px;
+    font-size: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     border: 1px solid #000;
@@ -68,11 +68,13 @@ button[value="end"] {
     background-color: #000;
     color: #fff;
     border: none;
+    margin: 30px;
 }
 
 button[value="start"]:hover,
 button[value="end"]:hover {
     background-color: #333;
+    margin: 30px;
 }
 
 /* 休憩入・休憩戻ボタン */
@@ -81,9 +83,11 @@ button[value="break_end"] {
     background-color: #fff;
     color: #000;
     border: 1px solid #000;
+    margin: 30px;
 }
 
 button[value="break_start"]:hover,
 button[value="break_end"]:hover {
     background-color: #eee;
+    margin: 30px;
 }

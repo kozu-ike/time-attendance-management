@@ -11,10 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class StampCorrectionRequestController extends Controller
 {
-    /**
-     * 修正申請の承認画面表示
-     * ルートモデルバインディングで受け取る
-     */
     public function editApprove($id)
     {
         $user = Auth::user();
@@ -37,10 +33,7 @@ class StampCorrectionRequestController extends Controller
         ]);
     }
 
-    /**
-     * 修正申請を承認し、勤務時間と休憩時間を更新する
-     */
-    public function approve( StampCorrectionRequest $correction)
+    public function approve(StampCorrectionRequest $correction)
     {
         $attendance = Attendance::findOrFail($correction->attendance_id);
 
@@ -48,7 +41,6 @@ class StampCorrectionRequestController extends Controller
         $attendance->clock_out = $correction->requested_clock_out;
         $attendance->save();
 
-        // 既存の休憩時間削除し、再登録
         BreakTime::where('attendance_id', $attendance->id)->delete();
 
         $breaks = json_decode($correction->requested_breaks_json, true);
@@ -59,21 +51,17 @@ class StampCorrectionRequestController extends Controller
                     'break_in' => $break['break_in'],
                     'break_out' => $break['break_out'],
                 ]);
+            }
+
+            $correction->status = 'approved';
+            $correction->reviewed_at = now();
+            $correction->admin_id = Auth::guard('admin')->id();
+            $correction->save();
+            return redirect()->back();
         }
+    }
 
-        // 修正申請のステータス更新
-        $correction->status = 'approved';
-        $correction->reviewed_at = now();
-        $correction->admin_id = Auth::guard('admin')->id();
-        $correction->save();
 
-            return redirect()->route('stamp_correction_request.list');    }
-}
-
-    /**
-     * 申請一覧（管理者は全件、ユーザーは自分の申請のみ）
-     */
-    
     public function index(Request $request)
     {
         if (!Auth::check() && !Auth::guard('admin')->check()) {
@@ -97,6 +85,6 @@ class StampCorrectionRequestController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('stamp_correction_request.list', compact('corrections','status' ,'isAdmin'));
+        return view('stamp_correction_request.list', compact('corrections', 'status', 'isAdmin'));
     }
 }
