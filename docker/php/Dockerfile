@@ -4,10 +4,16 @@ FROM php:8.4-fpm
 COPY php.ini /usr/local/etc/php/
 
 # 必要なパッケージのインストール
+
 RUN apt-get update && apt-get install -y \
-    default-mysql-client zlib1g-dev libzip-dev unzip curl git \
-    && docker-php-ext-install pdo_mysql zip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip unzip \
+    libzip-dev \
+    pkg-config \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd zip pdo_mysql
 
 
 # Composer のインストール
