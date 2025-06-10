@@ -70,7 +70,7 @@ class AttendanceController extends Controller
 
             case 'end':
                 if ($attendance->clock_in && !$attendance->clock_out) {
-                    $lastBreak = $attendance->breaks()->latest('id')->first();
+                    $lastBreak = $attendance->breaks()->latest('id')->first(); //userIDじゃなくていいの？いまは最後のIDからもってきてるから修正がいるかも？？
                     if ($lastBreak && !$lastBreak->break_out) {
                         break;
                     }
@@ -142,7 +142,9 @@ class AttendanceController extends Controller
             ->where('user_id', $user->id)
             ->firstOrFail();
         $attendances = collect([$attendance]);
-        return view('attendance.detail', compact('attendances'));
+        $correction = StampCorrectionRequest::where('attendance_id', $attendance_id)->first();
+
+        return view('attendance.detail', compact('attendances', 'correction'));
     }
 
     public function update(AttendanceRequest $request)
@@ -159,7 +161,6 @@ class AttendanceController extends Controller
                 continue;
             }
 
-            $attendance->work_date = $data['work_date'] ?? $attendance->work_date;
             $attendance->clock_in = !empty($data['clock_in'])
                 ? Carbon::parse($attendance->work_date . ' ' . $data['clock_in'])
                 : null;
@@ -172,15 +173,13 @@ class AttendanceController extends Controller
 
             if (isset($data['breaks']) && is_array($data['breaks'])) {
                 foreach ($data['breaks'] as $break) {
+                    //if (!($break['break_in']||$break['break_out']))検討
                     if (!empty($break['break_in']) && !empty($break['break_out'])) {
                         $workDate = $attendance->work_date;
 
                         $breakIn = Carbon::parse($workDate . ' ' . $break['break_in']);
                         $breakOut = Carbon::parse($workDate . ' ' . $break['break_out']);
 
-                        if ($breakOut->lt($breakIn)) {
-                            $breakOut->addDay();
-                        }
 
                         $attendance->breaks()->create([
                             'break_in' => $breakIn,
@@ -194,14 +193,15 @@ class AttendanceController extends Controller
                 'attendance_id' => $attendance->id,
                 'user_id' => $user->id,
                 'request_date' => now()->toDateString(),
-                'status' => 'pending',
+                'original_clock_in' => $attendance->getOriginal('clock_in'),
+                'original_clock_out' => $attendance->getOriginal('clock_out'),
+                'requested_clock_in' => $attendance->clock_in,
+                'requested_clock_out' => $attendance->clock_out,
+                'requested_breaks_json' => json_encode($attendance->breaks),
                 'note' => $note,
+                'status' => 'pending',
             ]);
-
-            return redirect()->route('stamp_correction_request.approve', $correction->id)
-                ->with('success', '修正申請を送信しました。');
         }
-
-        return redirect()->back()->with('error', '修正できる勤怠データが見つかりませんでした。');
+        return redirect()->route('user.attendance.detail', $attendance->id);
     }
 }

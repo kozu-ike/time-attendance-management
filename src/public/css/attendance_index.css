@@ -91,3 +91,51 @@ button[value="break_end"]:hover {
     background-color: #eee;
     margin: 30px;
 }
+
+.message-pending {
+    color: black;
+    font-weight: bold;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: 10px;
+    display: block;
+    font-size: 16px;
+    text-align: right;
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 700px; /* 少し幅を広げて余白を調整 */
+        padding: 40px;    /* パディングを少し増やす */
+        margin: 60px auto; /* 上下のマージンを少し増やす */
+    }
+
+    p.date {
+        font-size: 26px; /* 少し大きく */
+        margin-bottom: 4px;
+    }
+
+    p.time {
+        font-size: 90px; /* 少し大きく */
+        margin-bottom: 18px;
+    }
+
+    p.status {
+        padding: 10px 24px;
+        font-size: 18px;
+        margin-top: 110px;
+        margin-bottom: 18px;
+    }
+
+    button {
+        padding: 14px 60px;
+        font-size: 22px;
+    }
+
+    button[value="start"],
+    button[value="end"],
+    button[value="break_start"],
+    button[value="break_end"] {
+        margin: 35px;
+    }
+}

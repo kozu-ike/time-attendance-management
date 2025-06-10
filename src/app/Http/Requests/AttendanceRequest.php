@@ -4,29 +4,30 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 class AttendanceRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): bool
     {
-        return auth()->check();
+        return Auth::check() || Auth::guard('admin')->check();
     }
-    
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'attendances' => ['required', 'array'],
-            'attendances.*.clock_in' => ['nullable', 'date_format:H:i'],
-            'attendances.*.clock_out' => ['nullable', 'date_format:H:i'],
+            'attendances.*.clock_in' => ['nullable'],
+            'attendances.*.clock_out' => ['nullable'],
             'attendances.*.breaks' => ['nullable', 'array'],
-            'attendances.*.breaks.*.break_in' => ['nullable', 'date_format:H:i'],
-            'attendances.*.breaks.*.break_out' => ['nullable', 'date_format:H:i'],
-            'attendances.*.remarks' => ['required', 'string', 'max:255'],
+            'attendances.*.breaks.*.break_in' => ['nullable'],
+            'attendances.*.breaks.*.break_out' => ['nullable'],
+            'attendances.*.remarks' => ['nullable', 'string'],
         ];
     }
 
-    public function withValidator(Validator $validator)
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             $attendances = $this->input('attendances', []);
@@ -37,6 +38,7 @@ class AttendanceRequest extends FormRequest
                 $breaks = $data['breaks'] ?? [];
                 $remarks = $data['remarks'] ?? null;
 
+                // 出退勤の不整合
                 if ($clockIn && $clockOut) {
                     if (strtotime($clockIn) >= strtotime($clockOut)) {
                         $validator->errors()->add("attendances.{$attendanceId}.clock_in", "出勤時間もしくは退勤時間が不適切な値です");
@@ -44,6 +46,7 @@ class AttendanceRequest extends FormRequest
                     }
                 }
 
+                // 休憩時間チェック
                 foreach ($breaks as $idx => $break) {
                     $breakIn = $break['break_in'] ?? null;
                     $breakOut = $break['break_out'] ?? null;
@@ -55,15 +58,16 @@ class AttendanceRequest extends FormRequest
                             $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_in", "休憩時間が勤務時間外です");
                             $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_out", "休憩時間が勤務時間外です");
                         }
+
                         if (strtotime($breakIn) >= strtotime($breakOut)) {
-                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_in", "休憩時間もしくは終了時間が不適切な値です");
-                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_out", "休憩時間もしくは終了時間が不適切な値です");
+                            // このチェックは除外してよければコメントアウトしてください
+                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_in", "休憩時間が勤務時間外です");
+                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_out", "休憩時間が勤務時間外です");
                         }
-                    } elseif ($breakIn || $breakOut) {
-                        $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}", "休憩時間の開始・終了を正しく入力してください");
                     }
                 }
 
+                // 備考が空
                 if (empty($remarks)) {
                     $validator->errors()->add("attendances.{$attendanceId}.remarks", "備考を記入してください");
                 }

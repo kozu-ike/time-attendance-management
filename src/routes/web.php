@@ -56,6 +56,7 @@ Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/{attendance_id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
 
     Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
+    
 });
 
 

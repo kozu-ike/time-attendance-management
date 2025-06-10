@@ -21,11 +21,11 @@
     <button type="submit" name="action" value="start">出勤</button>
     @elseif ($status === '出勤中')
     <button type="submit" name="action" value="end">退勤</button>
-    <button type="submit" name="action" value="break_start">休憩入り</button>
+    <button type="submit" name="action" value="break_start">休憩入</button>
     @elseif ($status === '休憩中')
-    <button type="submit" name="action" value="break_end">休憩戻り</button>
+    <button type="submit" name="action" value="break_end">休憩戻</button>
     @elseif ($status === '退勤済')
-    <p>お疲れ様でした。</p>
+    <p class="message">お疲れ様でした。</p>
     @endif
 
 </form>

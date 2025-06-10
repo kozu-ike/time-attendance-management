@@ -144,3 +144,30 @@ h1 .bar {
     margin-bottom:50px;
     display: block;
 }
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .attendance-container,
+    .month-navigation,
+    .attendance-table {
+        max-width: 1100px; /* 幅を広げる */
+        width: 95%;
+        margin-bottom: 50px;
+    }
+
+    h1,
+    .table-title {
+        font-size: 26px; /* 少し大きく */
+        margin-bottom: 30px;
+    }
+
+    .attendance-table th,
+    .attendance-table td {
+        padding: 16px 20px; /* パディング増 */
+        font-size: 15px; /* フォント少し大きく */
+    }
+
+    .csv-button {
+        font-size: 18px;
+        padding: 14px 48px;
+        margin-right: 180px;
+    }
+}

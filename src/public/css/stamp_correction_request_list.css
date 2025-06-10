@@ -80,3 +80,25 @@ h1 .bar {
 .attendance-table td.detail a:hover {
     text-decoration: underline;
 }
+
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .attendance-table {
+        max-width: 1400px;
+        width: 90%;
+        margin-bottom: 50px;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin: 30px 0 30px;
+    }
+
+    .nav-link {
+        font-size: 16px;
+    }
+
+    .month-navigation {
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+}

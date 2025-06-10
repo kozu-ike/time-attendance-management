@@ -1,153 +1,4 @@
-/* body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
-    color: #333;
-}
 
-h1 {
-    font-size: 24px;
-    color: #2c3e50;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-}
-
-.bar {
-    color: #3498db;
-    margin-right: 10px;
-}
-.attendance-detail-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 40px auto 60px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    padding: 30px 40px;
-    font-weight: bold;
-    font-family: "Helvetica Neue", sans-serif;
-    color: #333;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    font-size: 15px;
-    margin-bottom: 30px;
-}
-
-thead {
-    background-color: #3498db;
-    color: white;
-}
-
-th{
-    padding: 12px 15px;
-    text-align: left;
-    font-weight: normal;
-    border-bottom: 1px solid #ddd;
-}
-td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-tr:hover {
-    background-color: #f0f8ff;
-}
-
-input[type="time"],
-input[type="text"] {
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-.time-inputs {
-    display: flex;
-    justify-content: flex-start;
-    gap: 16px;
-    margin-top: 5px;
-}
-
-.time-inputs > input[type="text"] {
-    width: 80px;
-}
-
-.break-time {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 5px;
-}
-
-.date-year {
-    margin-right: 8px;
-    font-weight: bold;
-    color: black;
-}
-
-.date-monthday {
-    font-weight: normal;
-    font-weight: bold;
-    color: black;
-}
-
-input[type="text"][name*="remarks"] {
-    height: 60px;
-    padding: 10px;
-    font-size: 14px;
-    resize: vertical;
-    box-sizing: border-box;
-    width: 50%;
-    margin-top: 5px;
-}
-
-.error-messages ul {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 20px;
-}
-
-.error-messages li {
-    color: red;
-    font-size: 14px;
-}
-
-.btn-attendance-submit {
-    background-color: black;
-    border: none;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 16px;
-    padding: 10px 30px;
-    margin-top: 20px;
-    transition: background-color 0.3s;
-}
-
-.btn-attendance-submit:hover {
-    background-color: #333;
-}
-
-.btn-approved {
-    background-color: #555555;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
-    font-size: 16px;
-    padding: 10px 30px;
-    margin-top: 20px;
-    cursor: not-allowed;
-} */
 body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: #f0f0f0;
@@ -188,7 +39,7 @@ h1 {
 .attendance-table {
     width: 90%;
     max-width: 960px;
-    margin: 0 auto 50px;
+    margin: 0 auto 20px;
     border-collapse: collapse;
     background-color: #fff;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
@@ -256,7 +107,8 @@ input[type="time"], input[type="text"] {
     cursor: pointer;
     border-radius: 8px;
     font-size: 16px;
-    padding: 12px 40px;
+    padding: 6px 40px;
+    margin-top: 0;
     margin-left: auto;
     margin-right: 40px;
     display: block;
@@ -273,22 +125,66 @@ input[type="time"], input[type="text"] {
     font-weight: bold;
     border-radius: 8px;
     font-size: 16px;
-    padding: 12px 40px;
-    margin-top: 10px;
+    padding: 6px 40px;
+    margin-top: 0;
     cursor: not-allowed;
     margin-left: auto;
     margin-right: 40px;
     display: block;
 }
 
-/* エラー */
-.error-messages ul {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 20px;
+.message-pending {
+    color: red;
+    font-weight: bold;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: 10px;
+    display: block;
+    font-size: 16px;
+    text-align: right; 
 }
 
-.error-messages li {
+/* エラー */
+.form__error {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
     color: red;
     font-size: 14px;
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .attendance-detail-container {
+        max-width: 900px; /* 幅を広げる */
+        padding: 0 24px; /* 横パディングを少し増やす */
+        margin: 30px auto; /* 上下マージンを少し増やす */
+    }
+
+    .attendance-table {
+        max-width: 1000px; /* 幅を広げる */
+        font-size: 15px; /* 少し文字を大きく */
+        margin-bottom: 40px;
+    }
+
+    th, td {
+        padding: 18px 12px; /* パディングを増やす */
+    }
+
+    input[type="time"], input[type="text"] {
+        width: 90px; /* 入力幅を少し広げる */
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+
+    .btn-attendance-submit,
+    .btn-approved {
+        font-size: 18px;
+        padding: 14px 48px;
+        margin-right: 50px;
+    }
+
+    .message-pending {
+        font-size: 18px;
+        margin-right: 20px;
+    }
 }

@@ -74,7 +74,7 @@
     $isAdmin = Auth::guard('admin')->check();
     @endphp
 
-    <div style="margin-top: 20px;">
+    
         @if ($isAdmin)
         @if ($correction->status === 'approved')
         <button type="button" class="btn-approved" disabled>承認済</button>
@@ -85,12 +85,11 @@
         </form>
         @endif
         @else
-        @if ($correction->status === 'pending')
-        <p style="color: red;">※承認待ちのため、修正はできません。</p>
-        @elseif ($correction->status === 'approved')
-        <p style="color: green;">この勤怠は承認済みです。</p>
+        @if ($correction && $correction->status === 'pending')
+        <p class="message-pending">※承認待ちのため、修正はできません。</p>
+
         @endif
         @endif
-    </div>
+   
 </div>
 @endsection

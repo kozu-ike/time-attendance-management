@@ -63,41 +63,27 @@
     text-decoration: none;
 }
 
-@media (max-width: 768px) {
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .login-form__content {
+        max-width: 1400px; /* 幅を広げる */
+        padding: 40px 30px;
+    }
+
     .form {
-        width: 100%;
-        padding: 0 10px;
+        width: 30%; /* フォーム幅を少し広げる */
     }
 
     .form__input--text input {
-        height: 45px;
+        height: 48px; /* 入力欄を少し大きく */
+        padding: 12px;
     }
 
     .form__button-submit {
-        height: 45px;
-        font-size: 16px;
-    }
-
-    .register__link {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 480px) {
-    .form {
-        width: 90%;
-    }
-
-    .form__input--text input {
-        height: 50px;
-    }
-
-    .form__button-submit {
-        height: 50px;
+        height: 56px; /* ボタンも大きめに */
         font-size: 18px;
     }
 
     .register__link {
-        font-size: 16px;
+        margin-top: 30px;
     }
 }
