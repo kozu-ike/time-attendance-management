@@ -57,8 +57,8 @@ class StampCorrectionRequestController extends Controller
             $correction->reviewed_at = now();
             $correction->admin_id = Auth::guard('admin')->id();
             $correction->save();
-            return redirect()->back();
         }
+        return view('stamp_correction_request.approve', compact('attendance', 'correction'));
     }
 
 

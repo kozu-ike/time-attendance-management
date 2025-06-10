@@ -79,7 +79,7 @@
         @if ($correction->status === 'approved')
         <button type="button" class="btn-approved" disabled>承認済</button>
         @elseif ($correction->status === 'pending')
-        <form method="POST" action="{{ route('stamp_correction_request.approve', $correction->id) }}">
+        <form method="POST" action="{{ route('admin.stamp_correction_request.approve', $correction->id) }}">
             @csrf
             <button type="submit" class="btn-attendance-submit">承認</button>
         </form>

@@ -29,7 +29,7 @@ class AttendanceService
 
         $totalBreakMinutes = $attendance->breaks->reduce(function ($carry, $break) {
             if (!$break->break_in || !$break->break_out) {
-                return $carry; // break_inまたはbreak_outが無ければスキップ
+                return $carry;
             }
 
             $in = Carbon::parse($break->break_in);
@@ -49,15 +49,15 @@ class AttendanceService
 
         $formatMinutes = function ($minutes) {
             if (is_null($minutes)) {
-                return '-';
+                return '';
             }
             $h = floor($minutes / 60);
             $m = $minutes % 60;
             return sprintf('%d:%02d', $h, $m);
         };
 
-        $attendance->formatted_clock_in = $clockIn ? $clockIn->format('H:i') : '-';
-        $attendance->formatted_clock_out = $clockOut ? $clockOut->format('H:i') : '-';
+        $attendance->formatted_clock_in = $clockIn ? $clockIn->format('H:i') : '';
+        $attendance->formatted_clock_out = $clockOut ? $clockOut->format('H:i') : '';
         $attendance->formatted_break = $formatMinutes($totalBreakMinutes);
         $attendance->formatted_work = $formatMinutes($workMinutes);
 

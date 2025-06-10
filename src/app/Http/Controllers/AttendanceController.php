@@ -76,6 +76,7 @@ class AttendanceController extends Controller
                     }
                     $attendance->clock_out = now();
                     $attendance->save();
+                    session()->flash('just_clocked_out', true);
                 }
                 break;
 
@@ -113,7 +114,7 @@ class AttendanceController extends Controller
         $month = $request->input('month', date('Y-m'));
         $userId = Auth::id();
 
-        $attendances = \App\Models\Attendance::with('breaks')
+        $attendances = Attendance::with('breaks')
             ->where('user_id', $userId)
             ->whereYear('work_date', '=', substr($month, 0, 4))
             ->whereMonth('work_date', '=', substr($month, 5, 2))
