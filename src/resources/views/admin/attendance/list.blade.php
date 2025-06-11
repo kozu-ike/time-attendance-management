@@ -50,7 +50,7 @@ $nextDate = $currentDate->copy()->addDay()->format('Y-m-d');
             <td class="gray">{{ $attendance->formatted_break }}</td>
             <td class="gray">{{ $attendance->formatted_work }}</td>
             <td class="detail">
-                <a href="{{ route('admin.attendance.detail', $attendance->id) }}">詳細</a>
+                <a href="{{ route('attendance.detail', $attendance->id) }}">詳細</a>
             </td>
         </tr>
         @endforeach

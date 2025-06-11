@@ -48,7 +48,7 @@
             </form>
             @else
             <a href="{{ url('/attendance') }}">勤怠</a>
-            <a href="{{ url('/attendance/list') }}">勤怠一覧</a>
+            <a href="{{ route('user.attendance.list') }}">勤怠一覧</a>
             <a href="{{ url('/stamp_correction_request/list') }}">申請</a>
             <form action="/logout" method="post" style="display:inline;">
                 @csrf

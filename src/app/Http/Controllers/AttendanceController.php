@@ -136,73 +136,138 @@ class AttendanceController extends Controller
 
     public function detail($attendance_id)
     {
-        $user = Auth::user();
+        if (Auth::guard('admin')->check()) {
+            $attendance = Attendance::with(['breaks', 'user'])->findOrFail($attendance_id);
 
-        $attendance = Attendance::with('breaks')
-            ->where('id', $attendance_id)
-            ->where('user_id', $user->id)
-            ->firstOrFail();
-        $attendances = collect([$attendance]);
-        $correction = StampCorrectionRequest::where('attendance_id', $attendance_id)->first();
+            return view('attendance.detail', [
+                'attendances' => [$attendance],
+                'correction' => null,
+            ]);
+        }
 
-        return view('attendance.detail', compact('attendances', 'correction'));
+        if (Auth::guard('web')->check()) {
+            $user = Auth::user();
+
+            $attendance = Attendance::with('breaks')
+                ->where('id', $attendance_id)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+
+            $correction = StampCorrectionRequest::where('attendance_id', $attendance_id)->first();
+
+            return view('attendance.detail', [
+                'attendances' => [$attendance],
+                'correction' => $correction,
+            ]);
+        }
+
+        abort(403, 'Unauthorized');
     }
+
 
     public function update(AttendanceRequest $request)
     {
-        $user = Auth::user();
-        $attendancesInput = $request->input('attendances', []);
+        if (Auth::guard('admin')->check()) {
+            $user = Auth::guard('admin')->user();
+            $attendancesInput = $request->input('attendances', []);
 
-        foreach ($attendancesInput as $attendanceId => $data) {
-            $attendance = Attendance::where('id', $attendanceId)
-                ->where('user_id', $user->id)
-                ->first();
+            foreach ($attendancesInput as $attendanceId => $data) {
+                $attendance = Attendance::find($attendanceId);
+                if (!$attendance) continue;
 
-            if (!$attendance) {
-                continue;
-            }
+                $attendance->clock_in = !empty($data['clock_in'])
+                    ? Carbon::parse($attendance->work_date . ' ' . $data['clock_in'])
+                    : null;
+                $attendance->clock_out = !empty($data['clock_out'])
+                    ? Carbon::parse($attendance->work_date . ' ' . $data['clock_out'])
+                    : null;
+                $note = $data['remarks'] ?? '';
+                $attendance->save();
 
-            $attendance->clock_in = !empty($data['clock_in'])
-                ? Carbon::parse($attendance->work_date . ' ' . $data['clock_in'])
-                : null;
-            $attendance->clock_out = !empty($data['clock_out'])
-                ? Carbon::parse($attendance->work_date . ' ' . $data['clock_out'])
-                : null;
-            $note = $data['remarks'] ?? '';
-            $attendance->save();
-            $attendance->breaks()->delete();
-
-            if (isset($data['breaks']) && is_array($data['breaks'])) {
-                foreach ($data['breaks'] as $break) {
-                    //if (!($break['break_in']||$break['break_out']))検討
-                    if (!empty($break['break_in']) && !empty($break['break_out'])) {
-                        $workDate = $attendance->work_date;
-
-                        $breakIn = Carbon::parse($workDate . ' ' . $break['break_in']);
-                        $breakOut = Carbon::parse($workDate . ' ' . $break['break_out']);
-
-
-                        $attendance->breaks()->create([
-                            'break_in' => $breakIn,
-                            'break_out' => $breakOut,
-                        ]);
+                $attendance->breaks()->delete();
+                if (isset($data['breaks']) && is_array($data['breaks'])) {
+                    foreach ($data['breaks'] as $break) {
+                        if (!empty($break['break_in']) && !empty($break['break_out'])) {
+                            $workDate = $attendance->work_date;
+                            $breakIn = Carbon::parse($workDate . ' ' . $break['break_in']);
+                            $breakOut = Carbon::parse($workDate . ' ' . $break['break_out']);
+                            $attendance->breaks()->create([
+                                'break_in' => $breakIn,
+                                'break_out' => $breakOut,
+                            ]);
+                        }
                     }
                 }
+
+                StampCorrectionRequest::create([
+                    'attendance_id' => $attendance->id,
+                    'user_id' => $attendance->user_id,
+                    'request_date' => now()->toDateString(),
+                    'original_clock_in' => $attendance->getOriginal('clock_in'),
+                    'original_clock_out' => $attendance->getOriginal('clock_out'),
+                    'requested_clock_in' => $attendance->clock_in,
+                    'requested_clock_out' => $attendance->clock_out,
+                    'requested_breaks_json' => json_encode($attendance->breaks),
+                    'note' => $note,
+                    'status' => 'approved',
+                ]);
             }
 
-            $correction = StampCorrectionRequest::create([
-                'attendance_id' => $attendance->id,
-                'user_id' => $user->id,
-                'request_date' => now()->toDateString(),
-                'original_clock_in' => $attendance->getOriginal('clock_in'),
-                'original_clock_out' => $attendance->getOriginal('clock_out'),
-                'requested_clock_in' => $attendance->clock_in,
-                'requested_clock_out' => $attendance->clock_out,
-                'requested_breaks_json' => json_encode($attendance->breaks),
-                'note' => $note,
-                'status' => 'pending',
-            ]);
+            return redirect()->route('attendance.detail', $attendance->id);
         }
-        return redirect()->route('user.attendance.detail', $attendance->id);
+
+        if (Auth::check()) {
+            $user = Auth::user();
+            $attendancesInput = $request->input('attendances', []);
+
+            foreach ($attendancesInput as $attendanceId => $data) {
+                $attendance = Attendance::where('id', $attendanceId)
+                    ->where('user_id', $user->id)
+                    ->first();
+
+                if (!$attendance) continue;
+
+                $attendance->clock_in = !empty($data['clock_in'])
+                    ? Carbon::parse($attendance->work_date . ' ' . $data['clock_in'])
+                    : null;
+                $attendance->clock_out = !empty($data['clock_out'])
+                    ? Carbon::parse($attendance->work_date . ' ' . $data['clock_out'])
+                    : null;
+                $note = $data['remarks'] ?? '';
+                $attendance->save();
+
+                $attendance->breaks()->delete();
+                if (isset($data['breaks']) && is_array($data['breaks'])) {
+                    foreach ($data['breaks'] as $break) {
+                        if (!empty($break['break_in']) && !empty($break['break_out'])) {
+                            $workDate = $attendance->work_date;
+                            $breakIn = Carbon::parse($workDate . ' ' . $break['break_in']);
+                            $breakOut = Carbon::parse($workDate . ' ' . $break['break_out']);
+                            $attendance->breaks()->create([
+                                'break_in' => $breakIn,
+                                'break_out' => $breakOut,
+                            ]);
+                        }
+                    }
+                }
+
+                StampCorrectionRequest::create([
+                    'attendance_id' => $attendance->id,
+                    'user_id' => $user->id,
+                    'request_date' => now()->toDateString(),
+                    'original_clock_in' => $attendance->getOriginal('clock_in'),
+                    'original_clock_out' => $attendance->getOriginal('clock_out'),
+                    'requested_clock_in' => $attendance->clock_in,
+                    'requested_clock_out' => $attendance->clock_out,
+                    'requested_breaks_json' => json_encode($attendance->breaks),
+                    'note' => $note,
+                    'status' => 'pending',
+                ]);
+            }
+
+            return redirect()->route('attendance.detail', $attendance->id);
+        }
+
+        abort(403);
     }
 }

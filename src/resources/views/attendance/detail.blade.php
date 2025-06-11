@@ -8,7 +8,7 @@
 <div class="attendance-detail-container">
     <h1><span class="bar"></span>勤怠詳細</h1>
 
-    <form method="POST" action="{{ route('user.attendance.update') }}">
+    <form action="{{ route('attendance.update') }}" method="POST">
         @csrf
         @foreach($attendances as $attendance)
         @php

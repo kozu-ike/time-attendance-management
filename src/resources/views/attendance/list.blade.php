@@ -47,7 +47,7 @@ $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
             <td>{{ $attendance->formatted_clock_out }}</td>
             <td>{{ $attendance->formatted_break }}</td>
             <td>{{ $attendance->formatted_work }}</td>
-            <td class="detail"><a href="{{ route('user.attendance.detail', $attendance->id) }}">詳細</a></td>
+            <td class="detail"><a href="{{ route('attendance.detail', $attendance->id) }}">詳細</a></td>
         </tr>
         @endforeach
     </tbody>

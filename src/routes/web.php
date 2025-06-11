@@ -43,8 +43,9 @@ Route::post('email/resend', [AuthController::class, 'resendVerification'])->name
 
 //申請一覧画面
 
-Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('stamp_correction_request.list');
-Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
+
+
+
 Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
     //出勤登録画面（一般ユーザー）
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
@@ -53,13 +54,16 @@ Route::name('user.')->middleware(['auth', 'verified'])->group(function () {
 
     //勤怠一覧画面（一般ユーザー）
     Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
-    //勤怠詳細画面（一般ユーザー）
-    Route::get('/attendance/{attendance_id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
 
-    Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
-    
 });
 
+Route::middleware(['auth.any'])->group(
+    function () {
+        Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('stamp_correction_request.list');
+        Route::get('/attendance/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+        Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
+    }
+);
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
@@ -79,10 +83,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         //スタッフ別勤怠CSV出力（管理者）
         Route::get('/attendance/staff/{user_id}/csv', [AdminAttendanceController::class, 'exportCsv'])->name('attendance.staff.csv');
 
-
-        //勤怠詳細画面（管理者）
-        Route::get('/attendance/{attendance_id}', [AdminAttendanceController::class,  'detail'])->name('attendance.detail');
-        
         //修正申請承認画面（管理者）
         Route::post('/stamp_correction_request/approve/{correction}', [StampCorrectionRequestController::class, 'approve'])
             ->name('stamp_correction_request.approve');
