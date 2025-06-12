@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Validation\Validator;
 
 class AttendanceRequest extends FormRequest
 {
@@ -38,15 +37,13 @@ class AttendanceRequest extends FormRequest
                 $breaks = $data['breaks'] ?? [];
                 $remarks = $data['remarks'] ?? null;
 
-                // 出退勤の不整合
                 if ($clockIn && $clockOut) {
                     if (strtotime($clockIn) >= strtotime($clockOut)) {
-                        $validator->errors()->add("attendances.{$attendanceId}.clock_in", "出勤時間もしくは退勤時間が不適切な値です");
-                        $validator->errors()->add("attendances.{$attendanceId}.clock_out", "出勤時間もしくは退勤時間が不適切な値です");
+                        $validator->errors()->add("attendances.{$attendanceId}.clock_in", '出勤時間もしくは退勤時間が不適切な値です');
+                        $validator->errors()->add("attendances.{$attendanceId}.clock_out", '出勤時間もしくは退勤時間が不適切な値です');
                     }
                 }
 
-                // 休憩時間チェック
                 foreach ($breaks as $idx => $break) {
                     $breakIn = $break['break_in'] ?? null;
                     $breakOut = $break['break_out'] ?? null;
@@ -55,21 +52,19 @@ class AttendanceRequest extends FormRequest
                         if (($clockIn && strtotime($breakIn) < strtotime($clockIn)) ||
                             ($clockOut && strtotime($breakOut) > strtotime($clockOut))
                         ) {
-                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_in", "休憩時間が勤務時間外です");
-                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_out", "休憩時間が勤務時間外です");
+                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_in", '休憩時間が勤務時間外です');
+                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_out", '休憩時間が勤務時間外です');
                         }
 
                         if (strtotime($breakIn) >= strtotime($breakOut)) {
-                            // このチェックは除外してよければコメントアウトしてください
-                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_in", "休憩時間が勤務時間外です");
-                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_out", "休憩時間が勤務時間外です");
+                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_in", '休憩時間が勤務時間外です');
+                            $validator->errors()->add("attendances.{$attendanceId}.breaks.{$idx}.break_out", '休憩時間が勤務時間外です');
                         }
                     }
                 }
 
-                // 備考が空
                 if (empty($remarks)) {
-                    $validator->errors()->add("attendances.{$attendanceId}.remarks", "備考を記入してください");
+                    $validator->errors()->add("attendances.{$attendanceId}.remarks", '備考を記入してください');
                 }
             }
         });

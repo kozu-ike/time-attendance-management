@@ -12,15 +12,14 @@ class Authenticate extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
-
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
             if ($request->is('admin') || $request->is('admin/*')) {
-                return route('admin.login'); // 管理者ログイン画面にリダイレクト
+                return route('admin.login');
             }
-            return route('login'); // 一般ユーザーのログイン画面にリダイレクト
+
+            return route('login');
         }
     }
 }
-

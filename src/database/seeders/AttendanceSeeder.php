@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Attendance;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class AttendanceSeeder extends Seeder
 {
@@ -17,6 +17,10 @@ class AttendanceSeeder extends Seeder
             for ($i = 1; $i < 90; $i++) {
                 $date = Carbon::today()->subDays($i);
 
+                if (in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
+                    continue;
+                }
+
                 $attendance = Attendance::create([
                     'user_id' => $user->id,
                     'work_date' => $date->toDateString(),
@@ -24,7 +28,6 @@ class AttendanceSeeder extends Seeder
                     'clock_out' => $date->copy()->setTime(18, 0)->format('Y-m-d H:i:s'),
                 ]);
 
-                // breaksをロードし直して、保存して計算をトリガー
                 $attendance->load('breaks');
                 $attendance->save();
             }

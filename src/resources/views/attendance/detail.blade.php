@@ -13,7 +13,6 @@
         @foreach($attendances as $attendance)
         @php
         $breaks = $attendance->breaks ?? collect();
-        $totalBreakCount = $breaks->count() + 1;
         @endphp
         <table class="attendance-table">
             <tbody>
@@ -49,20 +48,20 @@
 
                     </td>
                 </tr>
+                @for ($i = 0; $i < $attendance->totalBreakCount; $i++)
+                    @php
+                    $breakIn=old("attendances.{$attendance->id}.breaks.{$i}.break_in") ?? ($breaks->get($i)->break_in ?? '');
+                    $breakOut = old("attendances.{$attendance->id}.breaks.{$i}.break_out") ?? ($breaks->get($i)->break_out ?? '');
 
-                <tr>
-                    <th>休憩</th>
-                    <td>
-                        @for ($i = 0; $i < $totalBreakCount; $i++)
-                            @php
-                            $breakIn=old("attendances.{$attendance->id}.breaks.{$i}.break_in") ?? ($breaks->get($i)->break_in ?? '');
-                            $breakOut = old("attendances.{$attendance->id}.breaks.{$i}.break_out") ?? ($breaks->get($i)->break_out ?? '');
+                    if ($breakIn) $breakIn = \Carbon\Carbon::parse($breakIn)->format('H:i');
+                    if ($breakOut) $breakOut = \Carbon\Carbon::parse($breakOut)->format('H:i');
+                    @endphp
 
-                            if ($breakIn) $breakIn = \Carbon\Carbon::parse($breakIn)->format('H:i');
-                            if ($breakOut) $breakOut = \Carbon\Carbon::parse($breakOut)->format('H:i');
-                            @endphp
+                    @if ($i === 0)
+                    <tr>
+                        <th>休憩</th>
+                        <td>
 
-                            @if ($i === 0)
                             <div class="break-time">
                                 <input type="text" name="attendances[{{ $attendance->id }}][breaks][{{ $i }}][break_in]" value="{{ $breakIn }}" placeholder="休憩開始" />
 
@@ -76,47 +75,46 @@
                                 @enderror
                             </div>
 
-                    </td>
-                </tr>
-                @elseif ($i === 1)
-                <tr>
-                    <th>休憩２</th>
-                    <td>
+                        </td>
+                    </tr>
+                    @elseif ($i === 1)
+                    <tr>
+                        <th>休憩２</th>
+                        <td>
+                            <div class="break-time break-time-second">
+                                <input type="text" name="attendances[{{ $attendance->id }}][breaks][{{ $i }}][break_in]" value="{{ $breakIn }}" placeholder="休憩開始" />
+                                <div class="form__error">
+                                    @error("attendances.{$attendance->id}.breaks.{$i}.break_in")
+                                    {{ $message }}
+                                    @enderror
+                                </div>
+                                　〜　
+                                <input type="text" name="attendances[{{ $attendance->id }}][breaks][{{ $i }}][break_out]" value="{{ $breakOut }}" placeholder="休憩終了" />
+                                <div class="form__error">
+                                    @error("attendances.{$attendance->id}.breaks.{$i}.break_out")
+                                    {{ $message }}
+                                    @enderror
+                                </div>
+                            </div>
+                            @endif
+                            @endfor
+                        </td>
+                    </tr>
 
-                        <div class="break-time break-time-second">
-                            <input type="text" name="attendances[{{ $attendance->id }}][breaks][{{ $i }}][break_in]" value="{{ $breakIn }}" placeholder="休憩開始" />
+
+                    <tr>
+                        <th>備考</th>
+                        <td>
+                            <input type="text" name="attendances[{{ $attendance->id }}][remarks]"
+                                value="{{ old('attendances.' . $attendance->id . '.remarks', $attendance->remarks ?? '') }}"
+                                placeholder="備考を入力" />
                             <div class="form__error">
-                                @error("attendances.{$attendance->id}.breaks.{$i}.break_in")
+                                @error("attendances.{$attendance->id}.remarks")
                                 {{ $message }}
                                 @enderror
                             </div>
-                            　〜　
-                            <input type="text" name="attendances[{{ $attendance->id }}][breaks][{{ $i }}][break_out]" value="{{ $breakOut }}" placeholder="休憩終了" />
-                            <div class="form__error">
-                                @error("attendances.{$attendance->id}.breaks.{$i}.break_out")
-                                {{ $message }}
-                                @enderror
-                            </div>
-                        </div>
-                        @endif
-                        @endfor
-                    </td>
-                </tr>
-
-
-                <tr>
-                    <th>備考</th>
-                    <td>
-                        <input type="text" name="attendances[{{ $attendance->id }}][remarks]"
-                            value="{{ old('attendances.' . $attendance->id . '.remarks', $attendance->remarks ?? '') }}"
-                            placeholder="備考を入力" />
-                        <div class="form__error">
-                            @error("attendances.{$attendance->id}.remarks")
-                            {{ $message }}
-                            @enderror
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
             </tbody>
         </table>
         @endforeach

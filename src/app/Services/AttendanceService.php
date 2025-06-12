@@ -6,19 +6,12 @@ use Carbon\Carbon;
 
 class AttendanceService
 {
-    /**
-     * 勤怠データを受け取り、
-     * 勤務時間・休憩時間などを計算し
-     * フォーマット済みのプロパティを追加します。
-     *
-     * @param object $attendance 勤怠データ（breaksリレーション含む）
-     * @param array $dayOfWeekJP 曜日の日本語配列
-     * @return object フォーマット済みの勤怠データ
-     */
     public function formatAttendance($attendance, $dayOfWeekJP = ['日', '月', '火', '水', '木', '金', '土'])
     {
+        $attendance->totalBreakCount = $attendance->breaks->count() + 1;
+
         $workDate = Carbon::parse($attendance->work_date);
-        $attendance->formatted_date = $workDate->format('m/d') . '（' . $dayOfWeekJP[$workDate->dayOfWeek] . '）';
+        $attendance->formatted_date = $workDate->format('m/d').'（'.$dayOfWeekJP[$workDate->dayOfWeek].'）';
 
         $clockIn = $attendance->clock_in ? Carbon::parse($attendance->clock_in) : null;
         $clockOut = $attendance->clock_out ? Carbon::parse($attendance->clock_out) : null;
@@ -28,7 +21,7 @@ class AttendanceService
         }
 
         $totalBreakMinutes = $attendance->breaks->reduce(function ($carry, $break) {
-            if (!$break->break_in || !$break->break_out) {
+            if (! $break->break_in || ! $break->break_out) {
                 return $carry;
             }
 
@@ -53,6 +46,7 @@ class AttendanceService
             }
             $h = floor($minutes / 60);
             $m = $minutes % 60;
+
             return sprintf('%d:%02d', $h, $m);
         };
 

@@ -24,7 +24,6 @@ class StampCorrectionRequest extends Model
         'reviewed_at',
     ];
 
-
     public function attendance()
     {
         return $this->belongsTo(Attendance::class, 'attendance_id');

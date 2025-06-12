@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Admin;
 use App\Models\Attendance;
 use App\Models\StampCorrectionRequest;
-use App\Models\Admin;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
 class StampCorrectionRequestSeeder extends Seeder
@@ -19,8 +19,8 @@ class StampCorrectionRequestSeeder extends Seeder
         foreach ($attendances as $attendance) {
             $workDate = Carbon::parse($attendance->work_date);
 
-            $originalClockIn = Carbon::parse($workDate->format('Y-m-d') . ' ' . date('H:i:s', strtotime($attendance->clock_in)));
-            $originalClockOut = Carbon::parse($workDate->format('Y-m-d') . ' ' . date('H:i:s', strtotime($attendance->clock_out)));
+            $originalClockIn = Carbon::parse($workDate->format('Y-m-d').' '.date('H:i:s', strtotime($attendance->clock_in)));
+            $originalClockOut = Carbon::parse($workDate->format('Y-m-d').' '.date('H:i:s', strtotime($attendance->clock_out)));
 
             $requestedClockIn = (clone $originalClockIn)->subMinutes(rand(5, 20));
             $requestedClockOut = (clone $originalClockOut)->addMinutes(rand(5, 20));
@@ -45,7 +45,6 @@ class StampCorrectionRequestSeeder extends Seeder
                         'break_out' => $requestedClockIn->copy()->addHours(3)->addMinutes(30)->format('Y-m-d H:i:s'),
                     ],
                 ]),
-
 
                 'note' => Arr::random($notes),
                 'status' => ['pending', 'approved'][rand(0, 1)],

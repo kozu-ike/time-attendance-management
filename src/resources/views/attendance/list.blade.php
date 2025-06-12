@@ -7,14 +7,6 @@
 @section('content')
 <h1><span class="bar">｜</span> 勤怠一覧</h1>
 
-@php
-use Carbon\Carbon;
-
-$currentMonth = Carbon::parse($month ?? now());
-$prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
-$nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
-@endphp
-
 
 <div class="month-navigation">
     <a href="{{ route('user.attendance.list', ['month' => $prevMonth]) }}" class="nav-link">← 前月</a>

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Mail\VerifyEmail;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Log;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Models\User;
-use Illuminate\Auth\Events\Verified;
-use App\Mail\VerifyEmail;
 
 class AuthController extends Controller
 {
@@ -40,9 +40,10 @@ class AuthController extends Controller
 
         try {
             $this->sendVerificationEmail($user);
+
             return redirect()->route('auth.register');
         } catch (\Exception $e) {
-            Log::error("メール送信に失敗しました: " . $e->getMessage());
+            Log::error('メール送信に失敗しました: '.$e->getMessage());
         }
 
         return redirect()->route('verification.notice');
@@ -66,6 +67,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/login');
     }
 
@@ -92,11 +94,11 @@ class AuthController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (!hash_equals($hash, sha1($user->getEmailForVerification()))) {
+        if (! hash_equals($hash, sha1($user->getEmailForVerification()))) {
             abort(403, 'このリンクは無効です。');
         }
 
-        if (!$user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
             event(new Verified($user));
         }
@@ -108,8 +110,9 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
-        if ($user && !$user->hasVerifiedEmail()) {
+        if ($user && ! $user->hasVerifiedEmail()) {
             $this->sendVerificationEmail($user);
+
             return back()->with('resent', true);
         }
 

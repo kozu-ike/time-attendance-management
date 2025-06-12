@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\StampCorrectionRequest;
-use App\Models\BreakTime;
 use App\Models\Attendance;
+use App\Models\BreakTime;
+use App\Models\StampCorrectionRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 
 class StampCorrectionRequestController extends Controller
 {
@@ -16,7 +15,7 @@ class StampCorrectionRequestController extends Controller
         $user = Auth::user();
         $admin = Auth::guard('admin')->user();
 
-        if (!$user && !$admin) {
+        if (! $user && ! $admin) {
             abort(403, 'ログインしていません');
         }
 
@@ -58,13 +57,13 @@ class StampCorrectionRequestController extends Controller
             $correction->admin_id = Auth::guard('admin')->id();
             $correction->save();
         }
+
         return view('stamp_correction_request.approve', compact('attendance', 'correction'));
     }
 
-
     public function index(Request $request)
     {
-        if (!Auth::check() && !Auth::guard('admin')->check()) {
+        if (! Auth::check() && ! Auth::guard('admin')->check()) {
             return redirect()->route('login');
         }
 
@@ -74,7 +73,7 @@ class StampCorrectionRequestController extends Controller
         $status = $request->query('status', 'pending');  // 承認状態を取得
 
         $corrections = \App\Models\StampCorrectionRequest::with(['attendance.user'])
-            ->when(!$isAdmin, function ($query) use ($user) {
+            ->when(! $isAdmin, function ($query) use ($user) {
                 $query->whereHas('attendance', function ($subQuery) use ($user) {
                     $subQuery->where('user_id', $user->id);
                 });

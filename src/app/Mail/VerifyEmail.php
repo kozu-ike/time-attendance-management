@@ -10,13 +10,14 @@ class VerifyEmail extends Mailable
     use SerializesModels;
 
     public $user;
+
     public $verificationUrl;
 
     /**
      * Create a new message instance.
      *
-     * @param \App\Models\User $user
-     * @param string $verificationUrl
+     * @param  \App\Models\User  $user
+     * @param  string  $verificationUrl
      * @return void
      */
     public function __construct($user, $verificationUrl)

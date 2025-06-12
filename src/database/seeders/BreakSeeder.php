@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class BreakSeeder extends Seeder
 {

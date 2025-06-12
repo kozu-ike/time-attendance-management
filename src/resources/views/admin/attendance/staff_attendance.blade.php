@@ -7,15 +7,6 @@
 @section('content')
 <h1><span class="bar">｜</span> {{ $user->name }}さんの勤怠</h1>
 
-@php
-use Carbon\Carbon;
-
-$currentMonth = Carbon::parse($month ?? now());
-$prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
-$nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
-@endphp
-
-
 <div class="month-navigation">
     <a href="{{ route('admin.attendance.staff', ['user_id' => $user->id, 'month' => $prevMonth]) }}" class="nav-link">← 前月</a>
 
@@ -47,7 +38,13 @@ $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
             <td class="gray">{{ $attendance->formatted_clock_out }}</td>
             <td class="gray">{{ $attendance->formatted_break }}</td>
             <td class="gray">{{ $attendance->formatted_work }}</td>
-            <td class="detail"><a href="{{ route('attendance.detail', $attendance->id) }}">詳細</a></td>
+            <td class="detail">
+                @if($attendance->id)
+                <a href="{{ route('attendance.detail', $attendance->id) }}">詳細</a>
+                @else
+                詳細
+                @endif
+            </td>
         </tr>
         @endforeach
     </tbody>
