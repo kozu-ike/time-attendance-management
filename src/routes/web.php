@@ -19,6 +19,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function () {
+    return 'Hello World';
+});
+
 // 管理者ログイン
 Route::get('/admin/login', [AdminAuthController::class, 'login']);
 Route::post('/logout', [AdminAuthController::class, 'logout'])->middleware('adminauth');

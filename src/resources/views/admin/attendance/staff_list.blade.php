@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<h1><span class="bar">｜</span> スタッフ一覧</h1>
+<h1><span class="bar"></span> スタッフ一覧</h1>
 
 <table class="attendance-table">
     <thead>

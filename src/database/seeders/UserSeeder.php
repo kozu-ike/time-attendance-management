@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
         foreach ($users as $user) {
             $password = ($user['email'] === 'taro.y@coachtech.com') ? 'special_password' : 'password';
 
-            User::create([
+            User::firstOrCreate([
                 'name' => $user['name'],
                 'email' => $user['email'],
                 'password' => Hash::make($password),

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Feature\HelloTest" file="/var/www/tests/Feature/HelloTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.093128">
+    <testcase name="test_example" file="/var/www/tests/Feature/HelloTest.php" line="14" class="Tests\Feature\HelloTest" classname="Tests.Feature.HelloTest" assertions="1" time="0.093128"/>
+  </testsuite>
+</testsuites>

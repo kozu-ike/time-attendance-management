@@ -5,15 +5,7 @@
 @endsection
 
 @section('content')
-<h1><span class="bar">｜</span> <span class="current-day">{{ $currentDay }}</span>の勤怠</h1>
-
-@php
-use Carbon\Carbon;
-
-$currentDate = Carbon::parse($date);
-$prevDate = $currentDate->copy()->subDay()->format('Y-m-d');
-$nextDate = $currentDate->copy()->addDay()->format('Y-m-d');
-@endphp
+<h1><span class="bar"></span><span class="current-day">{{ $currentDay }}</span>の勤怠</h1>
 
 <div class="day-navigation">
     <a href="{{ route('admin.attendance.list', ['day' => $prevDate]) }}" class="nav-link">← 前日</a>

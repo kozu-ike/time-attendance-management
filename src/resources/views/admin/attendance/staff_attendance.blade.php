@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<h1><span class="bar">｜</span> {{ $user->name }}さんの勤怠</h1>
+<h1><span class="bar"></span> {{ $user->name }}さんの勤怠</h1>
 
 <div class="month-navigation">
     <a href="{{ route('admin.attendance.staff', ['user_id' => $user->id, 'month' => $prevMonth]) }}" class="nav-link">← 前月</a>

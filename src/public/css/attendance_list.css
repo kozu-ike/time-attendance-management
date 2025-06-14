@@ -7,20 +7,25 @@ body {
     color: #333;
 }
 
+
 h1 {
-    font-size: 22px;
-    margin: 30px 0 20px;
+    font-size: 20px;
+    color: #000;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    margin-left: 150px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-weight: left;
 }
 
-h1 .bar {
-    color: black;
+.bar {
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background-color: black;
     margin-right: 10px;
-    font-weight: bolder;
 }
+
 
 .table-title {
     font-size: 22px;
@@ -41,7 +46,7 @@ h1 .bar {
 .attendance-container {
     width: 90%;
     max-width: 960px;
-    margin: 0 auto 40px;
+    margin: 0 auto 30px;
     font-weight: bold;
     background-color: #fff;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);

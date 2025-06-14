@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="attendance-detail-container">
-    <h1><span class="bar">｜</span>勤怠詳細</h1>
+    <h1><span class="bar"></span>勤怠詳細</h1>
 
     @if ($errors->any())
     <div class="error-messages">
@@ -36,12 +36,8 @@
                 </td>
             </tr>
             <tr>
-                <th>出勤</th>
-                <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '-' }}</td>
-            </tr>
-            <tr>
-                <th>退勤</th>
-                <td>{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '-' }}</td>
+                <th>出勤・退勤</th>
+                <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '-' }} ～ {{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '-' }}</td>
             </tr>
             <tr>
                 <th>休憩</th>
@@ -65,7 +61,8 @@
             </tr>
             <tr>
                 <th>備考</th>
-                <td>{{ $attendance->remarks ?? '（記載なし）' }}</td>
+                <td>{{ $correction->note ?? '（記載なし）' }}</td>
+
             </tr>
         </tbody>
     </table>
@@ -74,22 +71,22 @@
     $isAdmin = Auth::guard('admin')->check();
     @endphp
 
-    
-        @if ($isAdmin)
-        @if ($correction->status === 'approved')
-        <button type="button" class="btn-approved" disabled>承認済</button>
-        @elseif ($correction->status === 'pending')
-        <form method="POST" action="{{ route('admin.stamp_correction_request.approve', $correction->id) }}">
-            @csrf
-            <button type="submit" class="btn-attendance-submit">承認</button>
-        </form>
-        @endif
-        @else
-        @if ($correction && $correction->status === 'pending')
-        <p class="message-pending">※承認待ちのため、修正はできません。</p>
 
-        @endif
-        @endif
-   
+    @if ($isAdmin)
+    @if ($correction->status === 'approved')
+    <button type="button" class="btn-approved" disabled>承認済</button>
+    @elseif ($correction->status === 'pending')
+    <form method="POST" action="{{ route('admin.stamp_correction_request.approve', $correction->id) }}">
+        @csrf
+        <button type="submit" class="btn-attendance-submit">承認</button>
+    </form>
+    @endif
+    @else
+    @if ($correction && $correction->status === 'pending')
+    <p class="message-pending">※承認待ちのため、修正はできません。</p>
+
+    @endif
+    @endif
+
 </div>
 @endsection
