@@ -59,7 +59,7 @@ class AuthController extends Controller
             return redirect('/attendance');
         }
 
-        return back()->withErrors(['email' => 'ログイン情報が登録されていません。']);
+        return back()->withErrors(['email' => 'ログイン情報が登録されていません']);
     }
 
     public function logout(Request $request)

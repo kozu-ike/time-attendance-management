@@ -24,7 +24,7 @@ class AdminAuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'メールアドレスまたはパスワードが正しくありません。',
+            'email' => 'ログイン情報が登録されていません',
         ])->withInput($request->only('email'));
     }
 
