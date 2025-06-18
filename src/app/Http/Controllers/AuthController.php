@@ -10,7 +10,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
@@ -38,14 +38,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        try {
-            $this->sendVerificationEmail($user);
-
-            return redirect()->route('auth.register');
-        } catch (\Exception $e) {
-            Log::error('メール送信に失敗しました: '.$e->getMessage());
-        }
-
+        event(new Registered($user));
         return redirect()->route('verification.notice');
     }
 
