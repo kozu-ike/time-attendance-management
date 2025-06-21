@@ -15,7 +15,9 @@ docker-compose up -d --build
 
 **Laravel環境構築**
 3. `docker-compose exec php bash`
+
 4. `composer install`
+
 5. 「.env.example」ファイルを 「.env」ファイルに命名を変更。
     または、新しく.envファイルを作成
 ``` bash
@@ -29,8 +31,6 @@ DB_PORT=3306
 DB_DATABASE=laravel_db
 DB_USERNAME=laravel_user
 DB_PASSWORD=laravel_pass
-
-STRIPE_SECRET=your_stripe_secret_key   # あなたのStripeのAPIキー
 ```
 
 - コマンドを実行してキャッシュをクリアし、設定が反映されるようにする。
@@ -52,6 +52,13 @@ php artisan migrate
 ``` bash
 php artisan db:seed
 ```
+
+## 管理者ログイン情報（開発用）
+
+開発環境で使用する管理者アカウントは、Seeder により作成されます。
+詳しくは以下の Seeder ファイルを参照してください：
+
+- `database/seeders/AdminSeeder.php`
 
 ## メール認証について
 
