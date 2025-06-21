@@ -17,7 +17,6 @@ class UserSeeder extends Seeder
             ['name' => '山本敬吉', 'email' => 'keikichi.y@coachtech.com'],
             ['name' => '秋田朋美', 'email' => 'tomomi.a@coachtech.com'],
             ['name' => '中西敦夫', 'email' => 'norio.n@coachtech.com'],
-            ['name' => '松尾小朱衣', 'email' => 'k0901k.1110@gmail.com'],
         ];
 
         foreach ($users as $user) {

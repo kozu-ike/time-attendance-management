@@ -100,7 +100,7 @@ class UserRegistrationTest extends TestCase
 
         $response = $this->post('/register', [
             'name' => $seedUser->name,
-            'email' => 'new.' . $seedUser->email,
+            'email' => 'new.'.$seedUser->email,
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
@@ -109,7 +109,7 @@ class UserRegistrationTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'name' => $seedUser->name,
-            'email' => 'new.' . $seedUser->email,
+            'email' => 'new.'.$seedUser->email,
         ]);
     }
 }

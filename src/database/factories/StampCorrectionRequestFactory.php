@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\StampCorrectionRequest;
 use App\Models\Attendance;
+use App\Models\StampCorrectionRequest;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StampCorrectionRequestFactory extends Factory

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AttendanceTest extends TestCase
 {
@@ -31,7 +31,7 @@ class AttendanceTest extends TestCase
 
         $today = now();
         $weekday = ['日', '月', '火', '水', '木', '金', '土'][$today->dayOfWeek];
-        $expectedDate = $today->format('Y年m月d日') . "（{$weekday}）";
+        $expectedDate = $today->format('Y年m月d日')."（{$weekday}）";
 
         $response->assertSeeText($expectedDate);
     }

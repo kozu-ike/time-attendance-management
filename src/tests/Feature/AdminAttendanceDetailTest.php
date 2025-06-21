@@ -12,6 +12,7 @@ class AdminAttendanceDetailTest extends TestCase
     use RefreshDatabase;
 
     protected User $adminUser;
+
     protected Attendance $attendance;
 
     protected function setUp(): void
@@ -28,8 +29,8 @@ class AdminAttendanceDetailTest extends TestCase
         $this->attendance = Attendance::factory()->create([
             'user_id' => $this->adminUser->id,
             'work_date' => now()->format('Y-m-d'),
-            'clock_in' => now()->format('Y-m-d') . ' 09:00:00',
-            'clock_out' => now()->format('Y-m-d') . ' 18:00:00',
+            'clock_in' => now()->format('Y-m-d').' 09:00:00',
+            'clock_out' => now()->format('Y-m-d').' 18:00:00',
         ]);
     }
 
@@ -52,8 +53,8 @@ class AdminAttendanceDetailTest extends TestCase
             ->post(route('attendance.update'), [
                 'attendances' => [
                     $this->attendance->id => [
-                        'clock_in' => now()->format('Y-m-d') . ' 19:00:00',
-                        'clock_out' => now()->format('Y-m-d') . ' 18:00:00',
+                        'clock_in' => now()->format('Y-m-d').' 19:00:00',
+                        'clock_out' => now()->format('Y-m-d').' 18:00:00',
                         'breaks' => [],
                         'remarks' => 'Valid remark',
                     ],
@@ -73,10 +74,10 @@ class AdminAttendanceDetailTest extends TestCase
             ->post(route('attendance.update'), [
                 'attendances' => [
                     $this->attendance->id => [
-                        'clock_in' => now()->format('Y-m-d') . ' 09:00:00',
-                        'clock_out' => now()->format('Y-m-d') . ' 18:00:00',
+                        'clock_in' => now()->format('Y-m-d').' 09:00:00',
+                        'clock_out' => now()->format('Y-m-d').' 18:00:00',
                         'breaks' => [
-                            ['break_in' => now()->format('Y-m-d') . ' 19:00:00', 'break_out' => now()->format('Y-m-d') . ' 19:30:00'],
+                            ['break_in' => now()->format('Y-m-d').' 19:00:00', 'break_out' => now()->format('Y-m-d').' 19:30:00'],
                         ],
                         'remarks' => 'Valid remark',
                     ],
@@ -96,10 +97,10 @@ class AdminAttendanceDetailTest extends TestCase
             ->post(route('attendance.update'), [
                 'attendances' => [
                     $this->attendance->id => [
-                        'clock_in' => now()->format('Y-m-d') . ' 09:00:00',
-                        'clock_out' => now()->format('Y-m-d') . ' 18:00:00',
+                        'clock_in' => now()->format('Y-m-d').' 09:00:00',
+                        'clock_out' => now()->format('Y-m-d').' 18:00:00',
                         'breaks' => [
-                            ['break_in' => now()->format('Y-m-d') . ' 17:00:00', 'break_out' => now()->format('Y-m-d') . ' 19:00:00'],
+                            ['break_in' => now()->format('Y-m-d').' 17:00:00', 'break_out' => now()->format('Y-m-d').' 19:00:00'],
                         ],
                         'remarks' => 'Valid remark',
                     ],
@@ -119,8 +120,8 @@ class AdminAttendanceDetailTest extends TestCase
             ->post(route('attendance.update'), [
                 'attendances' => [
                     $this->attendance->id => [
-                        'clock_in' => now()->format('Y-m-d') . ' 09:00:00',
-                        'clock_out' => now()->format('Y-m-d') . ' 18:00:00',
+                        'clock_in' => now()->format('Y-m-d').' 09:00:00',
+                        'clock_out' => now()->format('Y-m-d').' 18:00:00',
                         'breaks' => [],
                         'remarks' => '',
                     ],

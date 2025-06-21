@@ -5,15 +5,16 @@ namespace Tests\Feature;
 use App\Models\Admin;
 use App\Models\Attendance;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Carbon\Carbon;
 
 class AdminAttendanceListTest extends TestCase
 {
     use RefreshDatabase;
 
     protected Admin $admin;
+
     protected User $user;
 
     protected function setUp(): void

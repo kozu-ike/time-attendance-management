@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Attendance;
-use App\Models\StampCorrectionRequest;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,7 +12,9 @@ class AttendanceUpdateTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected Attendance $attendance;
+
     protected \App\Models\Admin $admin;
 
     protected function setUp(): void
@@ -48,8 +49,8 @@ class AttendanceUpdateTest extends TestCase
             ],
         ]);
 
-        $response->assertSessionHasErrors(['attendances.' . $this->attendance->id . '.clock_in']);
-        $response->assertSessionHasErrors(['attendances.' . $this->attendance->id . '.clock_out']);
+        $response->assertSessionHasErrors(['attendances.'.$this->attendance->id.'.clock_in']);
+        $response->assertSessionHasErrors(['attendances.'.$this->attendance->id.'.clock_out']);
         $this->assertStringContainsString('出勤時間もしくは退勤時間が不適切な値です', session('errors')->first());
     }
 
@@ -68,7 +69,7 @@ class AttendanceUpdateTest extends TestCase
             ],
         ]);
 
-        $response->assertSessionHasErrors(['attendances.' . $this->attendance->id . '.breaks.0.break_in']);
+        $response->assertSessionHasErrors(['attendances.'.$this->attendance->id.'.breaks.0.break_in']);
         $this->assertStringContainsString('休憩時間が勤務時間外です', session('errors')->first());
     }
 
@@ -87,7 +88,7 @@ class AttendanceUpdateTest extends TestCase
             ],
         ]);
 
-        $response->assertSessionHasErrors(['attendances.' . $this->attendance->id . '.breaks.0.break_out']);
+        $response->assertSessionHasErrors(['attendances.'.$this->attendance->id.'.breaks.0.break_out']);
         $this->assertStringContainsString('休憩時間が勤務時間外です', session('errors')->first());
     }
 
@@ -104,7 +105,7 @@ class AttendanceUpdateTest extends TestCase
             ],
         ]);
 
-        $response->assertSessionHasErrors(['attendances.' . $this->attendance->id . '.remarks']);
+        $response->assertSessionHasErrors(['attendances.'.$this->attendance->id.'.remarks']);
         $this->assertStringContainsString('備考を記入してください', session('errors')->first());
     }
 }

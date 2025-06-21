@@ -1,12 +1,11 @@
 body {
-    font-family: 'Helvetica Neue', sans-serif;
+    font-family: "Helvetica Neue", sans-serif;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
     text-align: center;
     color: #333;
 }
-
 
 h1 {
     font-size: 20px;
@@ -18,6 +17,15 @@ h1 {
     align-items: center;
 }
 
+h1 .bar {
+    width: 6px;
+    height: 24px;
+    margin-left: 20px;
+    background-color: rgb(59, 59, 59);
+    display: inline-block;
+    margin-right: 12px;
+}
+
 .bar {
     display: inline-block;
     width: 4px;
@@ -25,7 +33,6 @@ h1 {
     background-color: black;
     margin-right: 10px;
 }
-
 
 .table-title {
     font-size: 22px;
@@ -76,7 +83,7 @@ h1 {
 }
 
 .nav-link:hover {
-    color:  #666;
+    color: #666;
 }
 
 .month-form {
@@ -146,28 +153,28 @@ h1 {
     padding: 12px 40px;
     margin-left: auto;
     margin-right: 155px;
-    margin-bottom:50px;
+    margin-bottom: 50px;
     display: block;
 }
 @media screen and (min-width: 1400px) and (max-width: 1540px) {
     .attendance-container,
     .month-navigation,
     .attendance-table {
-        max-width: 1100px; /* 幅を広げる */
+        max-width: 1100px;
         width: 95%;
         margin-bottom: 50px;
     }
 
     h1,
     .table-title {
-        font-size: 26px; /* 少し大きく */
+        font-size: 26px;
         margin-bottom: 30px;
     }
 
     .attendance-table th,
     .attendance-table td {
-        padding: 16px 20px; /* パディング増 */
-        font-size: 15px; /* フォント少し大きく */
+        padding: 16px 20px;
+        font-size: 15px;
     }
 
     .csv-button {

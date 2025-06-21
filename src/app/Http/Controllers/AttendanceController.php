@@ -34,7 +34,7 @@ class AttendanceController extends Controller
                 $status = '退勤済';
             } else {
                 $lastBreak = $attendance->breaks()->latest('id')->first();
-                if ($lastBreak && !$lastBreak->break_out) {
+                if ($lastBreak && ! $lastBreak->break_out) {
                     $status = '休憩中';
                 } elseif ($attendance->clock_in) {
                     $status = '出勤中';
@@ -43,7 +43,7 @@ class AttendanceController extends Controller
         }
 
         $weekday = ['日', '月', '火', '水', '木', '金', '土'][$today->dayOfWeek];
-        $formattedDate = $today->format('Y年m月d日') . "（{$weekday}）";
+        $formattedDate = $today->format('Y年m月d日')."（{$weekday}）";
 
         return view('attendance.index', compact('status', 'formattedDate'));
     }
@@ -61,15 +61,15 @@ class AttendanceController extends Controller
 
         switch ($action) {
             case 'start':
-                if (!$attendance->clock_in) {
+                if (! $attendance->clock_in) {
                     $attendance->clock_in = now();
                     $attendance->save();
                 }
                 break;
             case 'end':
-                if ($attendance->clock_in && !$attendance->clock_out) {
+                if ($attendance->clock_in && ! $attendance->clock_out) {
                     $lastBreak = $attendance->breaks()->latest('id')->first();
-                    if (!$lastBreak || $lastBreak->break_out) {
+                    if (! $lastBreak || $lastBreak->break_out) {
                         $attendance->clock_out = now();
                         $attendance->save();
                         session()->flash('just_clocked_out', true);
@@ -77,16 +77,16 @@ class AttendanceController extends Controller
                 }
                 break;
             case 'break_start':
-                if ($attendance->clock_in && !$attendance->clock_out) {
+                if ($attendance->clock_in && ! $attendance->clock_out) {
                     $lastBreak = $attendance->breaks()->latest('id')->first();
-                    if (!$lastBreak || $lastBreak->break_out) {
+                    if (! $lastBreak || $lastBreak->break_out) {
                         $attendance->breaks()->create(['break_in' => now()]);
                     }
                 }
                 break;
             case 'break_end':
                 $lastBreak = $attendance->breaks()->latest('id')->first();
-                if ($lastBreak && !$lastBreak->break_out) {
+                if ($lastBreak && ! $lastBreak->break_out) {
                     $lastBreak->break_out = now();
                     $lastBreak->save();
                 }
@@ -134,7 +134,7 @@ class AttendanceController extends Controller
                 $attendances[] = $attendanceByDate[$dateStr];
             } else {
                 $attendances[] = (object) [
-                    'formatted_date' => $date->format('m/d') . '（' . $dayOfWeekJP[$date->dayOfWeek] . '）',
+                    'formatted_date' => $date->format('m/d').'（'.$dayOfWeekJP[$date->dayOfWeek].'）',
                     'formatted_clock_in' => '',
                     'formatted_clock_out' => '',
                     'formatted_break' => '',
@@ -147,12 +147,12 @@ class AttendanceController extends Controller
         return compact('attendances', 'month', 'currentMonth', 'prevMonth', 'nextMonth');
     }
 
-
     public function detail($attendance_id)
     {
         if (Auth::guard('admin')->check()) {
             $attendance = Attendance::with(['breaks', 'user'])->findOrFail($attendance_id);
             $attendance->totalBreakCount = $attendance->breaks->count() + 1;
+
             return view('attendance.detail', ['attendances' => [$attendance], 'correction' => null]);
         }
 
@@ -180,23 +180,23 @@ class AttendanceController extends Controller
         foreach ($request->input('attendances', []) as $attendanceId => $data) {
             $attendance = Attendance::find($attendanceId);
 
-            if (!$attendance || (!$isAdmin && $attendance->user_id !== $user->id)) {
+            if (! $attendance || (! $isAdmin && $attendance->user_id !== $user->id)) {
                 continue;
             }
 
             $originalClockIn = $attendance->clock_in;
             $originalClockOut = $attendance->clock_out;
 
-            $attendance->clock_in = !empty($data['clock_in']) ? Carbon::parse($attendance->work_date . ' ' . $data['clock_in']) : null;
-            $attendance->clock_out = !empty($data['clock_out']) ? Carbon::parse($attendance->work_date . ' ' . $data['clock_out']) : null;
+            $attendance->clock_in = ! empty($data['clock_in']) ? Carbon::parse($attendance->work_date.' '.$data['clock_in']) : null;
+            $attendance->clock_out = ! empty($data['clock_out']) ? Carbon::parse($attendance->work_date.' '.$data['clock_out']) : null;
             $attendance->save();
 
             $attendance->breaks()->delete();
             foreach ($data['breaks'] ?? [] as $break) {
-                if (!empty($break['break_in']) && !empty($break['break_out'])) {
+                if (! empty($break['break_in']) && ! empty($break['break_out'])) {
                     $attendance->breaks()->create([
-                        'break_in' => Carbon::parse($attendance->work_date . ' ' . $break['break_in']),
-                        'break_out' => Carbon::parse($attendance->work_date . ' ' . $break['break_out']),
+                        'break_in' => Carbon::parse($attendance->work_date.' '.$break['break_in']),
+                        'break_out' => Carbon::parse($attendance->work_date.' '.$break['break_out']),
                     ]);
                 }
             }

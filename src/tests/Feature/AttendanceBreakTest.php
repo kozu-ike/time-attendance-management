@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Attendance;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -81,7 +81,7 @@ class AttendanceBreakTest extends TestCase
         sleep(1);
         $this->actingAs($this->user)->post('/attendance/stamp', ['action' => 'break_end']);
 
-        $response = $this->actingAs($this->user)->get('/attendance/list?month=' . now()->format('Y-m'));
+        $response = $this->actingAs($this->user)->get('/attendance/list?month='.now()->format('Y-m'));
         $response->assertStatus(200);
 
         $response->assertSeeText('休憩');

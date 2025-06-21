@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Attendance;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Carbon\Carbon;
 
 class AttendanceListTest extends TestCase
 {
@@ -60,23 +59,22 @@ class AttendanceListTest extends TestCase
         // 表の日付例: 今月の最初の日を「m/d（曜日）」で作る
         $dayOfWeekJP = ['日', '月', '火', '水', '木', '金', '土'];
         $firstDay = now()->startOfMonth();
-        $expectedDate = $firstDay->format('m/d') . '（' . $dayOfWeekJP[$firstDay->dayOfWeek] . '）';
+        $expectedDate = $firstDay->format('m/d').'（'.$dayOfWeekJP[$firstDay->dayOfWeek].'）';
 
         $response->assertSeeText($expectedDate);
     }
 
-
     public function test_previous_month_data_is_displayed()
     {
         $lastMonth = now()->subMonth()->format('Y/m');
-        $response = $this->actingAs($this->user)->get('/attendance/list?month=' . now()->subMonth()->format('Y-m'));
+        $response = $this->actingAs($this->user)->get('/attendance/list?month='.now()->subMonth()->format('Y-m'));
 
         $response->assertStatus(200);
         $response->assertSeeText($lastMonth);
 
         $dayOfWeekJP = ['日', '月', '火', '水', '木', '金', '土'];
         $firstDayLastMonth = now()->subMonth()->startOfMonth();
-        $expectedDate = $firstDayLastMonth->format('m/d') . '（' . $dayOfWeekJP[$firstDayLastMonth->dayOfWeek] . '）';
+        $expectedDate = $firstDayLastMonth->format('m/d').'（'.$dayOfWeekJP[$firstDayLastMonth->dayOfWeek].'）';
 
         $response->assertSeeText($expectedDate);
     }
@@ -86,14 +84,14 @@ class AttendanceListTest extends TestCase
         $nextMonthCarbon = now()->addMonth();
         $nextMonth = $nextMonthCarbon->format('Y/m');
 
-        $response = $this->actingAs($this->user)->get('/attendance/list?month=' . $nextMonthCarbon->format('Y-m'));
+        $response = $this->actingAs($this->user)->get('/attendance/list?month='.$nextMonthCarbon->format('Y-m'));
 
         $response->assertStatus(200);
         $response->assertSeeText($nextMonth);
 
         $dayOfWeekJP = ['日', '月', '火', '水', '木', '金', '土'];
         $firstDayNextMonth = $nextMonthCarbon->copy()->startOfMonth();
-        $expectedDate = $firstDayNextMonth->format('m/d') . '（' . $dayOfWeekJP[$firstDayNextMonth->dayOfWeek] . '）';
+        $expectedDate = $firstDayNextMonth->format('m/d').'（'.$dayOfWeekJP[$firstDayNextMonth->dayOfWeek].'）';
 
         $response->assertSeeText($expectedDate);
     }
@@ -108,6 +106,6 @@ class AttendanceListTest extends TestCase
 
         $detailUrl = route('attendance.detail', $attendance->id);
 
-        $response->assertSeeHtml('href="' . $detailUrl . '"');
+        $response->assertSeeHtml('href="'.$detailUrl.'"');
     }
 }

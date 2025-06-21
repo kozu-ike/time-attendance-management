@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Attendance;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -37,7 +37,6 @@ class AttendanceClockOutTest extends TestCase
 
         $this->actingAs($this->user)->post('/attendance/stamp', ['action' => 'end']);
 
-
         $after = $this->actingAs($this->user)->get('/attendance');
         $after->assertSeeText('退勤済');
     }
@@ -53,9 +52,8 @@ class AttendanceClockOutTest extends TestCase
 
         $this->actingAs($this->user)->post('/attendance/stamp', ['action' => 'end']);
 
-
         // 管理画面（想定：勤怠一覧）で退勤時刻が確認できる
-        $response = $this->actingAs($this->user)->get('/attendance/list?month=' . now()->format('Y-m'));
+        $response = $this->actingAs($this->user)->get('/attendance/list?month='.now()->format('Y-m'));
         $response->assertStatus(200);
 
         $attendance->refresh();

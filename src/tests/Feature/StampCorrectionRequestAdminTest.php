@@ -2,25 +2,27 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Admin;
 use App\Models\Attendance;
 use App\Models\StampCorrectionRequest;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Carbon\Carbon;
 
 class StampCorrectionRequestAdminTest extends TestCase
 {
     use RefreshDatabase;
 
     protected Admin $admin;
+
     protected User $user;
+
     protected Attendance $attendance;
 
     protected StampCorrectionRequest $pendingRequest;
-    protected StampCorrectionRequest $approvedRequest;
 
+    protected StampCorrectionRequest $approvedRequest;
 
     protected function setUp(): void
     {
@@ -61,8 +63,6 @@ class StampCorrectionRequestAdminTest extends TestCase
         ]);
     }
 
-
-
     /** @test */
     public function admin_can_see_all_pending_correction_requests()
     {
@@ -97,7 +97,6 @@ class StampCorrectionRequestAdminTest extends TestCase
         $response->assertSee('18:30');
         $response->assertSee($this->pendingRequest->note);
     }
-
 
     /** @test */
     public function admin_can_approve_correction_request_and_attendance_is_updated()

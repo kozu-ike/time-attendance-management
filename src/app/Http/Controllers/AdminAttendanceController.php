@@ -50,7 +50,7 @@ class AdminAttendanceController extends Controller
                 $attendances[] = $attendanceByDate[$dateStr];
             } else {
                 $attendances[] = (object) [
-                    'formatted_date' => $date->format('m/d') . '（' . $dayOfWeekJP[$date->dayOfWeek] . '）',
+                    'formatted_date' => $date->format('m/d').'（'.$dayOfWeekJP[$date->dayOfWeek].'）',
                     'formatted_clock_in' => '',
                     'formatted_clock_out' => '',
                     'formatted_break' => '',
@@ -99,7 +99,7 @@ class AdminAttendanceController extends Controller
     public function exportCsv(Request $request, $user_id)
     {
         $month = $request->query('month', now()->format('Y-m'));
-        $startDate = Carbon::parse($month . '-01')->startOfMonth();
+        $startDate = Carbon::parse($month.'-01')->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
 
         $attendances = Attendance::where('user_id', $user_id)
@@ -111,7 +111,7 @@ class AdminAttendanceController extends Controller
             });
 
         $columns = ['日付', '出勤', '退勤', '休憩時間', '勤務時間'];
-        $columns_sjis = array_map(fn($col) => mb_convert_encoding($col, 'SJIS-win', 'UTF-8'), $columns);
+        $columns_sjis = array_map(fn ($col) => mb_convert_encoding($col, 'SJIS-win', 'UTF-8'), $columns);
 
         $headers = [
             'Content-Type' => 'text/csv',
@@ -130,7 +130,7 @@ class AdminAttendanceController extends Controller
                     $attendance->formatted_break,
                     $attendance->formatted_work,
                 ];
-                $row_sjis = array_map(fn($field) => mb_convert_encoding($field, 'SJIS-win', 'UTF-8'), $row);
+                $row_sjis = array_map(fn ($field) => mb_convert_encoding($field, 'SJIS-win', 'UTF-8'), $row);
                 fputcsv($file, $row_sjis);
             }
 

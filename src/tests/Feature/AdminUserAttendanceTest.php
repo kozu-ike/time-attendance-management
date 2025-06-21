@@ -2,18 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Attendance;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Carbon\Carbon;
 
 class AdminUserAttendanceTest extends TestCase
 {
     use RefreshDatabase;
 
     protected User $adminUser;
+
     protected User $generalUser;
+
     protected Attendance $attendance;
 
     protected function setUp(): void
@@ -29,11 +31,10 @@ class AdminUserAttendanceTest extends TestCase
         $this->attendance = Attendance::factory()->create([
             'user_id' => $this->generalUser->id,
             'work_date' => now()->format('Y-m-d'),
-            'clock_in' => now()->format('Y-m-d') . ' 09:00:00',
-            'clock_out' => now()->format('Y-m-d') . ' 18:00:00',
+            'clock_in' => now()->format('Y-m-d').' 09:00:00',
+            'clock_out' => now()->format('Y-m-d').' 18:00:00',
         ]);
     }
-
 
     /** @test */
     public function admin_can_view_all_general_users_list()
@@ -46,7 +47,7 @@ class AdminUserAttendanceTest extends TestCase
         // 一般ユーザーの氏名とメールアドレスが表示されていることを確認
         $response->assertSee($this->generalUser->name);
         $response->assertSee($this->generalUser->email);
-        
+
     }
 
     /** @test */

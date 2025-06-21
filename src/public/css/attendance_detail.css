@@ -10,12 +10,22 @@ body {
 h1 {
     font-size: 20px;
     color: #000;
+    margin-top: 50px;
     margin-bottom: 30px;
     margin-left: 40px;
-
     display: flex;
     align-items: center;
 }
+
+h1 .bar {
+    width: 6px;
+    height: 24px;
+    background-color: rgb(59, 59, 59);
+    display: flex;
+    align-items: flex-start;
+    margin-right: 12px;
+}
+
 
 .bar {
     display: inline-block;
@@ -25,19 +35,18 @@ h1 {
     margin-right: 10px;
 }
 
-/* 勤怠詳細白ボックス化 */
 .attendance-detail-container {
     width: 100%;
     max-width: 800px;
     margin: 20px auto;
-    background-color: transparent; /* 親は透明 */
+    background-color: transparent;
     font-weight: bold;
     font-family: "Helvetica Neue", sans-serif;
     color: #333;
     padding: 0 16px;
 }
 
-/* テーブル調整 */
+
 .attendance-table {
     width: 90%;
     max-width: 960px;
@@ -67,7 +76,7 @@ th {
     white-space: nowrap;
 }
 
-/* 出勤・退勤、休憩欄：横並び */
+
 .time-inputs, .break-time, .break-time-second {
     display: flex;
     justify-content: center;
@@ -76,7 +85,7 @@ th {
     margin-top: 0;
 }
 
-/* 備考欄 */
+
 input[type="text"][name*="remarks"] {
     height: 60px;
     padding: 12px;
@@ -89,7 +98,7 @@ input[type="text"][name*="remarks"] {
     border-radius: 8px;
 }
 
-/* 時刻入力欄統一 */
+
 input[type="time"], input[type="text"] {
     padding: 8px 10px;
     border: 1px solid #ccc;
@@ -100,7 +109,7 @@ input[type="time"], input[type="text"] {
     text-align: center;
 }
 
-/* ボタン */
+
 .btn-attendance-submit {
     background-color: black;
     border: none;
@@ -143,10 +152,9 @@ input[type="time"], input[type="text"] {
     margin-right: 10px;
     display: block;
     font-size: 16px;
-    text-align: right; 
+    text-align: right;
 }
 
-/* エラー */
 .form__error {
     list-style: none;
     padding: 0;
@@ -157,23 +165,23 @@ input[type="time"], input[type="text"] {
 
 @media screen and (min-width: 1400px) and (max-width: 1540px) {
     .attendance-detail-container {
-        max-width: 900px; /* 幅を広げる */
-        padding: 0 24px; /* 横パディングを少し増やす */
-        margin: 30px auto; /* 上下マージンを少し増やす */
+        max-width: 900px;
+        padding: 0 24px;
+        margin: 30px auto;
     }
 
     .attendance-table {
-        max-width: 1000px; /* 幅を広げる */
-        font-size: 15px; /* 少し文字を大きく */
+        max-width: 1000px;
+        font-size: 15px;
         margin-bottom: 40px;
     }
 
     th, td {
-        padding: 18px 12px; /* パディングを増やす */
+        padding: 18px 12px;
     }
 
     input[type="time"], input[type="text"] {
-        width: 90px; /* 入力幅を少し広げる */
+        width: 90px;
         font-size: 15px;
         padding: 10px 12px;
     }
