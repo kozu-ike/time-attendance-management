@@ -7,7 +7,7 @@
 @section('content')
 <h1><span class="bar"></span><span class="current-day">{{ $currentDay }}</span>の勤怠</h1>
 
-<div class="day-navigation">
+<div class="month-navigation">
     <a href="{{ route('admin.attendance.list', ['day' => $prevDate]) }}" class="nav-link">← 前日</a>
 
     {{-- 日付選択 --}}
