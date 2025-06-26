@@ -32,7 +32,7 @@ MAIL_USERNAME=your-mailtrap-username
 MAIL_PASSWORD=your-mailtrap-password
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS=（あなたのメールアドレス）
-MAIL_FROM_NAME="${time-attendance-management}"
+MAIL_FROM_NAME="Time Attendance Management"
 
 ```
 APP_KEY は空のままにせず、後で生成します。
@@ -48,7 +48,6 @@ php artisan key:generate --env=testing
 5. キャッシュのクリア
 設定を反映させるために、キャッシュをクリアします。
 
-bash
 ```bash
 php artisan config:clear
 ```
@@ -86,12 +85,11 @@ xml
 9. テストの実行
 テスト環境がセットアップできたら、以下のコマンドを使ってテストを実行できます。
 
-bash
 ```bash
 php artisan test
 ```
 # または直接 PHPUnit を実行
-bash
+
 ```bash
 vendor/bin/phpunit
 ```
